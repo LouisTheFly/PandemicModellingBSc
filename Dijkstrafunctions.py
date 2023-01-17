@@ -9,8 +9,9 @@ Created on Tue Jan 17 14:29:14 2023
 import networkx as nx
 import numpy as np
 import scipy as sp
-
+from collections import deque
 #%%
+
 """
 Here’s how it works:
 
@@ -38,8 +39,6 @@ def shortest_path_dijkstra(G, source):
     while queue:
         node = queue.popleft()
         new_dist = dist[node] + 1
-    
-
         neighbors = set(G[node]).difference(dist)
         for n in neighbors:
             dist[n] = new_dist
