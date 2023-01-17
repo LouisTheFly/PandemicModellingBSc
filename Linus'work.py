@@ -152,3 +152,47 @@ while len(susceptible) > 0:
 # Visualize the infection
 nx.draw(G, node_size = 1000, nodelist=infected, node_color = 'red')
 plt.show()
+
+#%%
+
+import networkx as nx 
+import matplotlib.pyplot as plt 
+
+#create a graph 
+G = nx.Graph() 
+
+#add the first node
+G.add_node(1, health_status="infected")
+
+#add other nodes 
+for i in range(2,11):
+    G.add_node(i, health_status="healthy")
+
+#add edges
+G.add_edges_from([(1,2), (1,3), (2,3), (2,4), (3,4), (3,5), (4,5), (4,6),
+                 (5,6), (5,7), (6,7), (6,8), (7,8), (7,9), (8,9), (8,10),
+                  (9,10)])
+
+#draw the graph 
+#color nodes based on their health status 
+colors = []
+for node in G.nodes():
+    if G.nodes[node]['health_status'] == 'infected':
+        colors.append('red')
+    else:
+        colors.append('blue')
+
+nx.draw(G, node_color=colors, with_labels=True)
+plt.show()
+
+#simulate the spread of the disease
+#assume that each node has a 10% chance of getting infected 
+for node in G.nodes():
+    if G.nodes[node]['health_status'] == 'healthy':
+        if random.random() <= 0.1:
+            G.nodes[node]['health_status'] = 'infected'
+            colors[node-1] = 'red'
+
+#re-draw the graph
+nx.draw(G, node_color=colors, with_labels=True)
+plt.show()
