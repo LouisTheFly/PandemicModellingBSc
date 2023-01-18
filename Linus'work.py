@@ -9,7 +9,9 @@ Created on Tue Jan 17 13:26:14 2023
 import networkx as nx
 import matplotlib.pyplot as plt
 import random
+import numpy as np
  
+#%%
 #Create a network of 100 individuals
 G = nx.complete_graph(100)
  
@@ -196,3 +198,29 @@ for node in G.nodes():
 #re-draw the graph
 nx.draw(G, node_color=colors, with_labels=True)
 plt.show()
+
+#%%
+"""
+All above were CHATGPT trials, here we are stress testing networks.
+How large can we generate with the computational power we have
+Try creating a graph with enough nodes to represent a population
+Find largest population that can be created visually and non-visually
+IN time of around 30 seconds
+"""
+node_names = np.arange(1000)
+graph = nx.DiGraph()
+for i in node_names:
+    graph.add_node('%s'%i)
+graph.add_edge('2','3')
+#nx.draw_random(graph, with_labels = True)
+"""
+very challenging to visualise anything over 1000
+
+without visualisation it can run 1 million nodes with ease
+a 10 million node graph takes around 1 or 2 minutes to generate
+"""
+
+#%%
+"""
+Functions to generate regular graphs
+"""
