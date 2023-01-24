@@ -5,180 +5,11 @@ Created on Tue Jan 17 13:26:14 2023
 
 @author: Linus
 """
-
 import networkx as nx
 import matplotlib.pyplot as plt
 import random 
 import numpy as np
 import pandas as pd
-
-        
-#%%
-
-
-import networkx as nx
-import matplotlib.pyplot as plt
-import random
-
-# Create a graph
-G = nx.cycle_graph(6) 
-
-# Create a list of nodes
-nodes = list(G.nodes())
-
-# Select a random node as the infected node
-infected_node = random.choice(nodes)
-
-# Iterate over the remaining nodes and generate edges
-for node in nodes:
-    # Generate a random number
-    r = random.random()
-    # If it is greater than 0.5, create an edge between the infected node and current node
-    if r > 0.5:
-        G.add_edge(infected_node, node)
-
-# Visualize the graph
-plt.figure()
-nx.draw(G, with_labels=True, font_weight='bold')
-plt.show()
-
-#%%
-
-
-import networkx as nx 
-import matplotlib.pyplot as plt 
-
-# Create a graph 
-G = nx.Graph() 
-
-# Add nodes 
-G.add_node(1)
-G.add_node(2)
-G.add_node(3)
-G.add_node(4)
-G.add_node(5)
-
-# Add edges 
-G.add_edge(1,2)
-G.add_edge(1,3)
-G.add_edge(2,3)
-G.add_edge(2,4)
-G.add_edge(3,4)
-G.add_edge(3,5)
-G.add_edge(4,5)
-
-# Visualize the graph 
-nx.draw(G, with_labels=True)
-plt.show()
-
-# Simulate pandemic 
-# Let node 1 be the infected node 
-infected_nodes = [1]
-
-# Iterate over each edge in the graph 
-for edge in G.edges(): 
-    # If the source node is infected 
-    if edge[0] in infected_nodes: 
-        # Infect the target node 
-        infected_nodes.append(edge[1]) 
-
-# Print the list of infected nodes 
-print("Infected nodes:", infected_nodes)
-
-#%%
-
-import networkx as nx
-import matplotlib.pyplot as plt
-
-# create a network graph
-G = nx.Graph()
-
-# add nodes 
-G.add_node('Person 0')
-
-# add edges
-G.add_edge('Person 0', 'Person 1')
-G.add_edge('Person 0', 'Person 2')
-G.add_edge('Person 0', 'Person 3')
-G.add_edge('Person 0', 'Person 4')
-G.add_edge('Person 0', 'Person 5')
-
-# draw the graph
-nx.draw(G, node_size = 1000, node_color = 'orange')
-plt.show()
-
-# simulate the spread of the virus
-# Person 0 is sick
-infected = ['Person 0']
-
-# Persons 1-5 can get sick
-susceptible = ['Person 1', 'Person 2', 'Person 3', 'Person 4', 'Person 5']
-
-# Create an empty list to store the infected people
-while len(susceptible) > 0:
-    new_infected = []
-
-    # Infect the susceptible people
-    for person in susceptible:
-        if 'Person 0' in G.neighbors(person):
-            new_infected.append(person)
-
-    # Remove the newly infected people from the susceptible list
-    for person in new_infected:
-        susceptible.remove(person)
-
-    # Add the newly infected people to the infected list
-    for person in new_infected:
-        infected.append(person)
-
-# Visualize the infection
-nx.draw(G, node_size = 1000, nodelist=infected, node_color = 'red')
-plt.show()
-
-#%%
-
-import networkx as nx 
-import matplotlib.pyplot as plt 
-
-#create a graph 
-G = nx.Graph() 
-
-#add the first node
-G.add_node(1, health_status="infected")
-
-#add other nodes 
-for i in range(2,11):
-    G.add_node(i, health_status="healthy")
-
-#add edges
-G.add_edges_from([(1,2), (1,3), (2,3), (2,4), (3,4), (3,5), (4,5), (4,6),
-                 (5,6), (5,7), (6,7), (6,8), (7,8), (7,9), (8,9), (8,10),
-                  (9,10)])
-
-#draw the graph 
-#color nodes based on their health status 
-colors = []
-for node in G.nodes():
-    if G.nodes[node]['health_status'] == 'infected':
-        colors.append('red')
-    else:
-        colors.append('blue')
-
-nx.draw(G, node_color=colors, with_labels=True)
-plt.show()
-
-#simulate the spread of the disease
-#assume that each node has a 10% chance of getting infected 
-for node in G.nodes():
-    if G.nodes[node]['health_status'] == 'healthy':
-        if random.random() <= 0.1:
-            G.nodes[node]['health_status'] = 'infected'
-            colors[node-1] = 'red'
-
-#re-draw the graph
-nx.draw(G, node_color=colors, with_labels=True)
-plt.show()
-
 #%%
 """
 All above were CHATGPT trials, here we are stress testing networks.
@@ -199,44 +30,35 @@ very challenging to visualise anything over 1000
 without visualisation it can run 1 million nodes with ease
 a 10 million node graph takes around 1 or 2 minutes to generate
 """
-
 #%%
 """
 Functions to generate regular graphs where you can edit how many neighbours each vertex has
 """
-numberofnodes=1000
+numberofnodes=20
 nodes = np.arange(numberofnodes)
 Columns=('degree','edges','prob')
 #dictionary = dict.fromkeys(nodes)
 dataframe=pd.DataFrame(data=None,index=nodes,columns=Columns)
 #%%
 for i in range(numberofnodes):
-    dataframe[0][i]=i
-    nodes[1][i]=2
+    dataframe['degree'][i]=2
+    dataframe['prob'][i]=1/2
     if i==0:
-        dataframe[2][i]=(numberofnodes[-1],i+1)
-    if i==numberofnodes[-1]:
-        dataframe[2][i]=numberofnodes[i-1,0]
+        dataframe['edges'][i]=[nodes[-1],i+1]
+    elif i==nodes[-1]:
+        dataframe['edges'][i]=[i-1,0]
     else:
-        dataframe[2][i]=[i-1,i+1]
-    
-#%%
-dictionary=dict()
-=[position,degree,listnodes]
-
-
+        dataframe['edges'][i]=[i-1,i+1]
 #%%
 #creating the graph
 G=nx.Graph()
-
 G.add_nodes_from(nodes)
-nx.draw_random(G, with_labels = True)
+for i in range(numberofnodes):
+    edge_temp = dataframe['edges'][i]
+    G.add_edge(i,edge_temp[1])
+    G.add_edge(i,edge_temp[1])
+nx.draw_circular(G, with_labels = True)
 
-#adding edges/probabilities
-
-for i in range(len(nodes)):
-    
-    
     
     
     
