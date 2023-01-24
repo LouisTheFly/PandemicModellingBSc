@@ -10,6 +10,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import random 
 import numpy as np
+import pandas as pd
 
         
 #%%
@@ -204,13 +205,26 @@ a 10 million node graph takes around 1 or 2 minutes to generate
 Functions to generate regular graphs where you can edit how many neighbours each vertex has
 """
 numberofnodes=1000
-nodes=dict('nodeID','position','degree','listnodes')
-
+nodes = np.arange(numberofnodes)
+Columns=('degree','edges','prob')
+#dictionary = dict.fromkeys(nodes)
+dataframe=pd.DataFrame(data=None,index=nodes,columns=Columns)
 #%%
 for i in range(numberofnodes):
-    nodes['nodeID'][i]=i
-    nodes['degree'][i]=2
-    #nodes[3][i]=(i-1,i+1)
+    dataframe[0][i]=i
+    nodes[1][i]=2
+    if i==0:
+        dataframe[2][i]=(numberofnodes[-1],i+1)
+    if i==numberofnodes[-1]:
+        dataframe[2][i]=numberofnodes[i-1,0]
+    else:
+        dataframe[2][i]=[i-1,i+1]
+    
+#%%
+dictionary=dict()
+=[position,degree,listnodes]
+
+
 #%%
 #creating the graph
 G=nx.Graph()
@@ -223,4 +237,11 @@ nx.draw_random(G, with_labels = True)
 for i in range(len(nodes)):
     
     
-
+    
+    
+    
+    
+    
+    
+    
+    
