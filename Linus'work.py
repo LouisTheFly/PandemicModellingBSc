@@ -8,30 +8,9 @@ Created on Tue Jan 17 13:26:14 2023
 
 import networkx as nx
 import matplotlib.pyplot as plt
-import random
+import random 
 import numpy as np
- 
-#%%
-#Create a network of 100 individuals
-G = nx.complete_graph(100)
- 
-#Initialize each individual with a randomly assigned 'susceptibility' to the virus
-for n in G.nodes():
-    G.nodes[n]['susceptible'] = random.randint(1, 10)
- 
-#Simulate the spread of the virus
-for n in G.nodes():
-    if G.nodes[n]['susceptible'] > 6:
-        G.nodes[n]['infected'] = True
-    else:
-        G.nodes[n]['infected'] = False
- 
-#Mark each node as 'infected' if it is connected to an infected node
-for x, y in G.edges():
-    if G.nodes[x]['infected'] == True or G.nodes[y]['infected'] == True:
-        G.nodes[x]['infected'] = True
-        G.nodes[]
-        
+
         
 #%%
 
@@ -207,12 +186,12 @@ Try creating a graph with enough nodes to represent a population
 Find largest population that can be created visually and non-visually
 IN time of around 30 seconds
 """
-node_names = np.arange(1000)
+node_names = np.arange(100)
 graph = nx.DiGraph()
 for i in node_names:
     graph.add_node('%s'%i)
-graph.add_edge('2','3')
-#nx.draw_random(graph, with_labels = True)
+#graph.add_edge('2','3')
+nx.draw_random(graph, with_labels = True)
 """
 very challenging to visualise anything over 1000
 
@@ -222,5 +201,26 @@ a 10 million node graph takes around 1 or 2 minutes to generate
 
 #%%
 """
-Functions to generate regular graphs
+Functions to generate regular graphs where you can edit how many neighbours each vertex has
 """
+numberofnodes=1000
+nodes=dict('nodeID','position','degree','listnodes')
+
+#%%
+for i in range(numberofnodes):
+    nodes['nodeID'][i]=i
+    nodes['degree'][i]=2
+    #nodes[3][i]=(i-1,i+1)
+#%%
+#creating the graph
+G=nx.Graph()
+
+G.add_nodes_from(nodes)
+nx.draw_random(G, with_labels = True)
+
+#adding edges/probabilities
+
+for i in range(len(nodes)):
+    
+    
+
