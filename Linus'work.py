@@ -36,13 +36,14 @@ Functions to generate regular graphs where you can edit how many neighbours each
 """
 numberofnodes=20
 nodes = np.arange(numberofnodes)
-Columns=('degree','edges','prob')
+Columns=('degree','edges','prob','infected')
 #dictionary = dict.fromkeys(nodes)
 dataframe=pd.DataFrame(data=None,index=nodes,columns=Columns)
 #%%
 for i in range(numberofnodes):
     dataframe['degree'][i]=2
-    dataframe['prob'][i]=1/2
+    dataframe['prob'][i]=[1/2,1/2]
+    dataframe['infected']=0
     if i==0:
         dataframe['edges'][i]=[nodes[-1],i+1]
     elif i==nodes[-1]:
@@ -59,11 +60,19 @@ for i in range(numberofnodes):
     G.add_edge(i,edge_temp[1])
 nx.draw_circular(G, with_labels = True)
 
-    
-    
-    
-    
-    
+#%%
+'''
+Creating time evolution algorithm
+time in days
+'''
+time=100
+dataframe['infected'][0]=1
+infectedlist=[0]
+#%%
+for i in range(time):
+    infectionops=dataframe.loc[dataframe['infected'] == 1]
+    #which edges get infected
+    #infect=
     
     
     
