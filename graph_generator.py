@@ -23,11 +23,23 @@ def complete_graph(dataframe):
         dataframe['edges'][i] = temp_edges
     return
 
+def loop_graph(dataframe):
+    nodes = list(dataframe.index)
+    for i in nodes:
+        temp_edges = []
+        temp_edges.append((i+1)%(nodes[-1]+1))
+        temp_edges.append((i-1)%(nodes[-1]+1))
+        dataframe['edges'][i] = temp_edges
+    return
+
 def degree_calc(dataframe):
     for i in dataframe.index:
         dataframe['degree'][i] = len(dataframe['edges'][i])
     return
     
+#########################################################
+
+
 def draw_circular_graph(dataframe):
     nodes = list(dataframe.index)
     G = nx.Graph()
@@ -50,15 +62,20 @@ def draw_random_graph(dataframe):
     
 
 #%%
-numberofnodes=6
+numberofnodes=12
 nodes = np.arange(numberofnodes)
 Columns=('degree','edges','prob')
 
 dataframe=pd.DataFrame(data=None,index=nodes,columns=Columns)
 
 test = dataframe
-complete_graph(test)
-degree_calc(test)
-#draw_circular_graph(test)
 
+#Type of graph
+complete_graph(test)
+loop_graph(test)
+degree_calc(test)
+
+#Visual Graph
+#draw_circular_graph(test)
 draw_random_graph(test)
+
