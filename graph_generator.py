@@ -21,7 +21,7 @@ def make_dataframe(graph):
     return df
 
 
-def make_graph(nodes = 10, graph_type = 'complete', draw_type = 'circular', show = True, dataset = False):
+def make_graph(nodes = 10, graph_type = 'complete'):
     
     #Choose which graph to draw
     if graph_type == 'cycle':
@@ -33,24 +33,20 @@ def make_graph(nodes = 10, graph_type = 'complete', draw_type = 'circular', show
     nx.set_node_attributes(G, 0, name = 'Infection')
     
     #Add edge attributes
-    nx.set_edge_attributes(G, 0.5, name = 'Probability')
-    
-    #Define shape of plot
-    #'nx.'+
-    pos = nx.draw_type_layout(G)
-    #Show a plot of the graph if needed
-    if show == True:
-           nx.draw_networkx(G, pos, with_labels = True)
-           nx.draw_networkx_nodes(G, pos, node_color="tab:blue")
-           #nx.draw_networkx_nodes(G, pos, nodelist=[0, 1, 2, 3], node_color="tab:red")
-           nx.draw_networkx_edges(G, pos)
-    
-    #Make a dataframe with all information within the graph
-    if dataset == True:
-        df = make_dataframe(G)
-        return df
+    nx.set_edge_attributes(G, 0.5, name = 'Probability')        
     
     return G
+
+def draw_graph(G, draw_type = 'circular'):
+    #Define shape of plot
+    'nx.'+ draw_type +'_layout(G)'
+    pos = nx.draw_type_layout(G)
+    
+    nx.draw_networkx(G, pos, with_labels = True)
+    nx.draw_networkx_nodes(G, pos, node_color="tab:blue")
+    #nx.draw_networkx_nodes(G, pos, nodelist=[0, 1, 2, 3], node_color="tab:red")
+    nx.draw_networkx_edges(G, pos)
+
 
 def infection(G, nodes_to_infect):
     nodes = dict.fromkeys(nodes_to_infect, 1)
@@ -60,7 +56,7 @@ def infection(G, nodes_to_infect):
 #%%
 graph_test = make_graph(15, graph_type = 'cycle')
 #df_test = make_dataframe(graph_test)
-<<<<<<< Updated upstream
+
 
 
 #%%
@@ -70,14 +66,4 @@ def returninfections(array_probabilities,nodes):
         infects=np.where(infectionlist>0)
         infectedlist.append(list( nodes[k] for k in infects ))
         return infectedlist
-    
-    
-    
-    
-    
-    
-    
-    
-=======
-#list(nx.neighbors(graph_test, 7))
->>>>>>> Stashed changes
+
