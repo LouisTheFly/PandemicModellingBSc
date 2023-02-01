@@ -53,29 +53,13 @@ for i in range(numberofnodes):
     else:
         df['edges'][i]=[i-1,i+1]
 #%%
-#creating the graph
-G=nx.Graph()
-G.add_nodes_from(nodes)
-for i in range(numberofnodes):
-    edge_temp = dataframe['edges'][i]
-    G.add_edge(i,edge_temp[1])
-    G.add_edge(i,edge_temp[1])
-nx.draw_circular(G, with_labels = True)
-
-#%%
 '''
 Creating time evolution algorithm
 time in days
 '''
 time=100
 df.loc[df['infected'][0]]=1
-infectedlist=[0]
-#%%
-for i in range(time):
-    infectionops=df.loc[dataframe['infected'] == 1]
-    #which edges get infected
-    #infect=
-    
+infectedlist=[0]    
 #%%
 '''
 Using Networkx
@@ -94,14 +78,13 @@ for i in range(time):
     probability=[]
     for j in range(infectedlist):
         x=infectedlist[j]
-        nodeforprob=(get_nodes(Graph[x])) # CHCECKL IF THESE ARE IN THE SAME ORDER
-        probability=(get_edge_probability(subrgraph(Graph,x))  #produces a list
-        infectionlist=(np.random.random(size=len(array_probabilities))<array_probabilities).astype(int)
-        infects=np.where(infectionlist>0)
-        infectedlist.append(list( nodeforprob[k] for k in infects ))
-        infectedlist
+        nodes=(nx.neighbors(graph,x)) # CHCECKL IF THESE ARE IN THE SAME ORDER
+        array_probabilities=nx.get_edge_attributes(nx.subgraph(graph,x),'Probability') #produces a list of probabilities corresponding to each edge
+        newinfections=gen.returninfections(array_probabilities,nodes)
+        infectedlist.append(newinfections)
+        gen.infection(graph,infectedlist)
+        #USE LOUIS CODE TO CHANGE NETWORK TO ADD NEW INFECTIONS
         
-
 
 
 
