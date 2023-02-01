@@ -38,18 +38,18 @@ numberofnodes=20
 nodes = np.arange(numberofnodes)
 Columns=('degree','edges','prob','infected')
 #dictionary = dict.fromkeys(nodes)
-dataframe=pd.DataFrame(data=None,index=nodes,columns=Columns)
+df=pd.DataFrame(data=None,index=nodes,columns=Columns)
 #%%
 for i in range(numberofnodes):
-    dataframe['degree'][i]=2
-    dataframe['prob'][i]=[1/2,1/2]
-    dataframe['infected']=0
+    df['degree'][i]=2
+    df['prob'][i]=[1/2,1/2]
+    df['infected']=0
     if i==0:
-        dataframe['edges'][i]=[nodes[-1],i+1]
+        df['edges'][i]=[nodes[-1],i+1]
     elif i==nodes[-1]:
-        dataframe['edges'][i]=[i-1,0]
+        df['edges'][i]=[i-1,0]
     else:
-        dataframe['edges'][i]=[i-1,i+1]
+        df['edges'][i]=[i-1,i+1]
 #%%
 #creating the graph
 G=nx.Graph()
@@ -66,13 +66,41 @@ Creating time evolution algorithm
 time in days
 '''
 time=100
-dataframe['infected'][0]=1
+df.loc[df['infected'][0]]=1
 infectedlist=[0]
 #%%
 for i in range(time):
-    infectionops=dataframe.loc[dataframe['infected'] == 1]
+    infectionops=df.loc[dataframe['infected'] == 1]
     #which edges get infected
     #infect=
+    
+#%%
+'''
+Using Networkx
+'''
+#infect node 0
+infectedlist=[0]
+for i in range(time):
+    nodes=[]
+    probability=[]
+    for j in range(infectedlist):
+        x=infectedlist[j]
+        nodeforprob=(get_nodes(Graph[x])) # CHCECKL IF THESE ARE IN THE SAME ORDER
+        probability=(get_edge_probability(subrgraph(Graph,x))  #produces a list
+        infectionlist=(np.random.random(size=len(array_probabilities))<array_probabilities).astype(int)
+        infects=np.where(infectionlist>0)
+        infectedlist.append(list( nodeforprob[k] for k in infects ))
+        infectedlist
+        
+
+
+
+
+
+
+
+
+
     
     
     
