@@ -56,9 +56,12 @@ def infection(G, nodes_to_infect):
 #%%
 graph_test = make_graph(15, graph_type = 'cycle')
 #df_test = make_dataframe(graph_test)
+<<<<<<< Updated upstream
 
 
 
+=======
+>>>>>>> Stashed changes
 #%%
 def returninfections(array_probabilities,nodes):
         infectedlist=[]
@@ -66,4 +69,8 @@ def returninfections(array_probabilities,nodes):
         infects=np.where(infectionlist>0)
         infectedlist.append(list( nodes[k] for k in infects ))
         return infectedlist
+<<<<<<< Updated upstream
 
+=======
+    
+>>>>>>> Stashed changes
