@@ -10,6 +10,8 @@ import matplotlib.pyplot as plt
 import random 
 import numpy as np
 import pandas as pd
+import graph_generator as gen
+
 #%%
 """
 All above were CHATGPT trials, here we are stress testing networks.
@@ -78,7 +80,14 @@ for i in range(time):
 '''
 Using Networkx
 '''
+time=10
+graph = gen.make_graph(10, graph_type = 'cycle', dataset = False)
 #infect node 0
+patient0 = {0:1}
+nx.set_node_attributes(graph,patient0,'Infection')
+#print(nx.get_node_attributes(graph,'Infection'))
+
+#%%
 infectedlist=[0]
 for i in range(time):
     nodes=[]

@@ -133,3 +133,20 @@ def make_graph(nodes = 10, graph_type = 'complete', draw_type = 'circular', show
 #%%
 graph_test = make_graph(15, graph_type = 'cycle', dataset = False)
 #df_test = make_dataframe(graph_test)
+
+
+#%%
+def returninfections(array_probabilities,nodes):
+        infectedlist=[]
+        infectionlist=(np.random.random(size=len(array_probabilities))<array_probabilities).astype(int)
+        infects=np.where(infectionlist>0)
+        infectedlist.append(list( nodes[k] for k in infects ))
+        return infectedlist
+    
+    
+    
+    
+    
+    
+    
+    
