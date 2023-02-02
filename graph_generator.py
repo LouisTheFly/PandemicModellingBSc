@@ -56,16 +56,16 @@ def draw_graph(G, draw_type = 'circular'):
     return
 
 
-def infection(G, nodes_to_infect):
+def infect_nodes(G, nodes_to_infect):
     nodes = dict.fromkeys(nodes_to_infect, 1)
     nx.set_node_attributes(G, nodes, name = 'Infection')
     return G
 
 #%%
-graph_test = make_graph(11, graph_type = 'cycle')
+graph_test = make_graph(20, graph_type = 'cycle')
 #df_test = make_dataframe(graph_test)
 
-graph_test = infection(graph_test, [10,4,8,9])
+graph_test = infect_nodes(graph_test, [10,4,8,9])
 
 draw_graph(graph_test, draw_type = 'circular')
 
@@ -73,8 +73,8 @@ draw_graph(graph_test, draw_type = 'circular')
 
 #%%
 def returninfections(array_probabilities,nodes):
-        infectedlist=[]
-        infectionlist=(np.random.random(size=len(array_probabilities))<array_probabilities).astype(int)
-        infects=np.where(infectionlist>0)
-        infectedlist.append(list( nodes[k] for k in infects ))
-        return infectedlist
+    infectedlist=[]
+    infectionlist=(np.random.random(size=len(array_probabilities))<array_probabilities).astype(int)
+    infects=np.where(infectionlist>0)
+    infectedlist.append(list( nodes[k] for k in infects ))
+    return infectedlist
