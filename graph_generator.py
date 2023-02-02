@@ -38,16 +38,21 @@ def make_graph(nodes = 10, graph_type = 'complete'):
     return G
 
 def draw_graph(G, draw_type = 'circular'):
+
     #Define shape of plot
-    pos = exec('nx.%s_layout(%s)'%(draw_type, G))
-    print(pos)
-    #print('nx.'+ draw_type +'_layout(G)')
-    #pos = nx.draw_type_layout(G)
+    if draw_type == 'random':
+        pos = nx.random_layout(G)
+    else:
+        pos = nx.circular_layout(G)
     
-    nx.draw_networkx(G, pos, with_labels = True)
-    #nx.draw_networkx_nodes(G, pos, node_color="tab:blue")
-    #nx.draw_networkx_nodes(G, pos, nodelist=[0, 1, 2, 3], node_color="tab:red")
-    #nx.draw_networkx_edges(G, pos)
+    #Find infected nodes to colour red
+    infected_nodes = list({k:v for (k,v) in nx.get_node_attributes(G, 'Infection').items() if v==1})
+    
+    #Draw Nodes, Edges, Labels
+    nx.draw_networkx_nodes(G, pos, node_color="tab:blue")
+    nx.draw_networkx_nodes(G, pos, nodelist=infected_nodes, node_color="tab:red")
+    nx.draw_networkx_edges(G, pos)
+    nx.draw_networkx_labels(G, pos)
     return
 
 
@@ -57,10 +62,13 @@ def infection(G, nodes_to_infect):
     return G
 
 #%%
-graph_test = make_graph(10, graph_type = 'cycle')
+graph_test = make_graph(11, graph_type = 'cycle')
 #df_test = make_dataframe(graph_test)
 
+graph_test = infection(graph_test, [10,4,8,9])
+
 draw_graph(graph_test, draw_type = 'circular')
+
 
 
 #%%
