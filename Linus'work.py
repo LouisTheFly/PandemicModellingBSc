@@ -67,26 +67,20 @@ Using Networkx
 time=10
 graph = gen.make_graph(10, graph_type = 'cycle', dataset = False)
 #infect node 0
-patient0 = {0:1}
-nx.set_node_attributes(graph,patient0,'Infection')
-#print(nx.get_node_attributes(graph,'Infection'))
-
+gen.infection(graph,[0])
 #%%
 infectedlist=[0]
+time=10
 for i in range(time):
-    nodes=[]
-    probability=[]
-    for j in range(infectedlist):
+   # nx.draw_circular(graph) #draw graph function will be inserted here
+   print(infectedlist)
+    for j in range(len(infectedlist)):
         x=infectedlist[j]
-        nodes=(nx.neighbors(graph,x)) # CHCECKL IF THESE ARE IN THE SAME ORDER
-        array_probabilities=nx.get_edge_attributes(nx.subgraph(graph,x),'Probability') #produces a list of probabilities corresponding to each edge
+        nodes=list(nx.neighbors(graph,x))# CHCECKL IF THESE ARE IN THE SAME ORDER
+        array_probabilities=list(nx.get_edge_attributes(nx.subgraph(graph,x),'Probability')) #produces a list of probabilities corresponding to each edge
         newinfections=gen.returninfections(array_probabilities,nodes)
         infectedlist.append(newinfections)
         gen.infection(graph,infectedlist)
-        #USE LOUIS CODE TO CHANGE NETWORK TO ADD NEW INFECTIONS
-        
-
-
 
 
 

@@ -59,6 +59,7 @@ def infection(G, nodes_to_infect):
 #%%
 graph_test = make_graph(10, graph_type = 'cycle')
 #df_test = make_dataframe(graph_test)
+
 draw_graph(graph_test, draw_type = 'circular')
 
 
@@ -69,4 +70,3 @@ def returninfections(array_probabilities,nodes):
         infects=np.where(infectionlist>0)
         infectedlist.append(list( nodes[k] for k in infects ))
         return infectedlist
-
