@@ -75,6 +75,7 @@ graph = gen.make_graph(10, graph_type = 'cycle') # dataset = False
 graph = gen.infect_nodes(graph, [0])
 gen.draw_graph(graph, draw_type = 'circular')
 #%%
+#NOW NEED TO EDIT SO IT IGNORES ALREADY INFECTED NOES
 infectedlist=[0]
 time=10
 for i in range(time):
@@ -82,14 +83,13 @@ for i in range(time):
    print(infectedlist)
    for j in range(len(infectedlist)):
         x=infectedlist[j]
-        nodes=list(nx.neighbors(graph,x))# CHCECKL IF THESE ARE IN THE SAME ORDER
+        nodes=list(nx.neighbors(graph,x))# CHCECK IF THESE ARE IN THE SAME ORDER
         nodes1=copy.deepcopy(nodes)
         nodes1.append(x)
         array_probabilities=nx.get_edge_attributes(nx.subgraph(graph,nodes1),'Probability') #produces a list of probabilities corresponding to each edge
         probs=list(array_probabilities.values())
         newinfections,graph=gen.returninfections(graph,probs,nodes)
         if len(newinfections) > 0:
-            print(newinfections)
             infectedlist.extend(newinfections)
             #infectedlist=np.array(infectedlist)
 
