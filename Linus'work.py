@@ -11,6 +11,7 @@ import random
 import numpy as np
 import pandas as pd
 import graph_generator as gen
+import copy
 
 #%%
 """
@@ -42,6 +43,9 @@ Columns=('degree','edges','prob','infected')
 #dictionary = dict.fromkeys(nodes)
 df=pd.DataFrame(data=None,index=nodes,columns=Columns)
 #%%
+'''
+not useful
+'''
 for i in range(numberofnodes):
     df['degree'][i]=2
     df['prob'][i]=[1/2,1/2]
@@ -54,6 +58,7 @@ for i in range(numberofnodes):
         df['edges'][i]=[i-1,i+1]
 #%%
 '''
+not useful
 Creating time evolution algorithm
 time in days
 '''
@@ -65,22 +70,26 @@ infectedlist=[0]
 Using Networkx
 '''
 time=10
-graph = gen.make_graph(10, graph_type = 'cycle', dataset = False)
+graph = gen.make_graph(10, graph_type = 'cycle') # dataset = False
+
 #infect node 0
-gen.infection(graph,[0])
+graph = gen.infect_nodes(graph, [0])
+gen.draw_graph(graph, draw_type = 'circular')
 #%%
 infectedlist=[0]
 time=10
 for i in range(time):
    # nx.draw_circular(graph) #draw graph function will be inserted here
    print(infectedlist)
-    for j in range(len(infectedlist)):
+   for j in range(len(infectedlist)):
         x=infectedlist[j]
         nodes=list(nx.neighbors(graph,x))# CHCECKL IF THESE ARE IN THE SAME ORDER
-        array_probabilities=list(nx.get_edge_attributes(nx.subgraph(graph,x),'Probability')) #produces a list of probabilities corresponding to each edge
-        newinfections=gen.returninfections(array_probabilities,nodes)
+        nodes1=copy.deepcopy(nodes)
+        nodes1.append(x)
+        array_probabilities=nx.get_edge_attributes(nx.subgraph(graph,nodes1),'Probability') #produces a list of probabilities corresponding to each edge
+        probs=list(array_probabilities.values())
+        newinfections,graph=gen.returninfections(graph,probs,nodes)
         infectedlist.append(newinfections)
-        gen.infection(graph,infectedlist)
 
 
 

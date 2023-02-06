@@ -21,7 +21,7 @@ def make_graph(nodes = 10, graph_type = 'complete'):
         G = nx.complete_graph(nodes)
     
     #Add node attributes
-    nx.set_node_attributes(G, 0, name = 'Infection')
+    nx.set_node_attributes(G, False, name = 'Infection')
     
     #Add edge attributes
     nx.set_edge_attributes(G, 0.5, name = 'Probability')        
@@ -70,7 +70,7 @@ def make_dataframe(G):
 
 #Infects specified nodes
 def infect_nodes(G, nodes_to_infect):
-    nodes = dict.fromkeys(nodes_to_infect, 1)
+    nodes = dict.fromkeys(nodes_to_infect, True)
     nx.set_node_attributes(G, nodes, name = 'Infection')
     return G
 
@@ -86,9 +86,12 @@ df = make_dataframe(G)
 
 
 #%%
-def returninfections(array_probabilities,nodes):
+def returninfections(graph,array_prob,nodes):
     infectedlist=[]
-    infectionlist=(np.random.random(size=len(array_probabilities))<array_probabilities).astype(int)
-    infects=np.where(infectionlist>0)
-    infectedlist.append(list( nodes[k] for k in infects ))
-    return infectedlist
+    infectionlist=(np.random.random(size=len(array_prob))<array_prob).astype(bool)
+    infects=np.where(infectionlist)[0]
+    
+    #need to now take infect values and find corresponding node locations from nodes
+    if np.any(infectionlist):
+        graph=infect_nodes(graph,infects[0])
+    return infectedlist,graph
