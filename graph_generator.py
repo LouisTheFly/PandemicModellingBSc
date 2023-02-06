@@ -76,6 +76,8 @@ def returninfections(graph,array_prob,nodes):
     infectedlist=[]
     infectionlist=(np.random.random(size=len(array_prob))<array_prob).astype(bool)
     infects=np.where(infectionlist)[0]
+    
+    #need to now take infect values and find corresponding node locations from nodes
     if np.any(infectionlist):
         graph=infect_nodes(graph,infects[0])
     return infectedlist,graph
