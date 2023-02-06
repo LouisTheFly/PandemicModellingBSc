@@ -12,15 +12,6 @@ import scipy as sp
 
 #%% Generating graphs in newtwork x
 
-#Dataframe generation from graph
-def make_dataframe(graph):
-    index = np.arange(len(graph))
-    columns=('degree','edges','prob')
-    df=pd.DataFrame(data=None,index=index,columns=columns)
-    #df['degree'] = nx.degree(graph)
-    return df
-
-
 def make_graph(nodes = 10, graph_type = 'complete'):
     
     #Choose which graph to draw
@@ -49,26 +40,49 @@ def draw_graph(G, draw_type = 'circular'):
     infected_nodes = list({k:v for (k,v) in nx.get_node_attributes(G, 'Infection').items() if v==1})
     
     #Draw Nodes, Edges, Labels
-    nx.draw_networkx_nodes(G, pos, node_color="tab:blue")
-    nx.draw_networkx_nodes(G, pos, nodelist=infected_nodes, node_color="tab:red")
+    nx.draw_networkx_nodes(G, pos, node_color="tab:blue") #Healthy
+    nx.draw_networkx_nodes(G, pos, nodelist=infected_nodes, node_color="tab:red") #Infected
     nx.draw_networkx_edges(G, pos)
     nx.draw_networkx_labels(G, pos)
     return
 
+#Dataframe generation from graph
+def make_dataframe(G):
+    index = np.arange(len(G))
+    columns=('infection', 'degree', 'edges', 'prob')
+    df=pd.DataFrame(data=None,index=index,columns=columns)
+    
+    #infection
+    df['infection'] = dict(nx.get_node_attributes(G, 'Infection')).values()
+    
+    #degree
+    df['degree'] = dict(nx.degree(G)).values()
+    
+    #subgraph
+    for i in range(len(G)):
+        neighbors = list(nx.neighbors(G, i))
+        neighbors.append(i)
+        subG = nx.subgraph(G, neighbors)
+        df['edges'][i] = nx.edges(subG)
+        df['prob'][i] = list(nx.get_edge_attributes(subG, 'Probability').values())
+    
+    return df
 
+#Infects specified nodes
 def infect_nodes(G, nodes_to_infect):
     nodes = dict.fromkeys(nodes_to_infect, 1)
     nx.set_node_attributes(G, nodes, name = 'Infection')
     return G
 
 #%%
-graph_test = make_graph(20, graph_type = 'cycle')
+G = make_graph(13, graph_type = 'connected')
 #df_test = make_dataframe(graph_test)
 
-graph_test = infect_nodes(graph_test, [10,4,8,9])
+G = infect_nodes(G, [10,4,8,9])
 
-draw_graph(graph_test, draw_type = 'circular')
+draw_graph(G, draw_type = 'circular')
 
+df = make_dataframe(G)
 
 
 #%%
