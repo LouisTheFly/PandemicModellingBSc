@@ -56,7 +56,6 @@ for i in range(numberofnodes):
         df['edges'][i]=[i-1,0]
     else:
         df['edges'][i]=[i-1,i+1]
-#%%
 '''
 not useful
 Creating time evolution algorithm
@@ -89,8 +88,10 @@ for i in range(time):
         array_probabilities=nx.get_edge_attributes(nx.subgraph(graph,nodes1),'Probability') #produces a list of probabilities corresponding to each edge
         probs=list(array_probabilities.values())
         newinfections,graph=gen.returninfections(graph,probs,nodes)
-        infectedlist.append(newinfections)
-
+        if len(newinfections) > 0:
+            print(newinfections)
+            infectedlist.extend(newinfections)
+            #infectedlist=np.array(infectedlist)
 
 
 

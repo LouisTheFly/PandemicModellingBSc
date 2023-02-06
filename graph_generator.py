@@ -46,6 +46,19 @@ def draw_graph(G, draw_type = 'circular'):
     nx.draw_networkx_labels(G, pos)
     return
 
+#%%
+'''
+Not useful at the moment, will be later
+returning errors
+/Users/Linus/Documents/PandemicModellingBSc/graph_generator.py:66: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df['edges'][i] = nx.edges(subG)
+/Users/Linus/Documents/PandemicModellingBSc/graph_generator.py:67: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df['prob'][i] = list(nx.get_edge_attributes(subG, 'Probability').values())
+'''
 #Dataframe generation from graph
 def make_dataframe(G):
     index = np.arange(len(G))
@@ -67,6 +80,7 @@ def make_dataframe(G):
         df['prob'][i] = list(nx.get_edge_attributes(subG, 'Probability').values())
     
     return df
+#%%
 
 #Infects specified nodes
 def infect_nodes(G, nodes_to_infect):
@@ -87,11 +101,11 @@ df = make_dataframe(G)
 
 #%%
 def returninfections(graph,array_prob,nodes):
-    infectedlist=[]
     infectionlist=(np.random.random(size=len(array_prob))<array_prob).astype(bool)
     infects=np.where(infectionlist)[0]
     infectednodes = [nodes[i] for i in infects]
-    #need to now take infect values and find corresponding node locations from nodes
-    if np.any(infectionlist):
+    if np.any(infectednodes):
         graph=infect_nodes(graph,infectednodes)
-    return infectedlist,graph
+        return infectednodes,graph
+    else:
+        return  [],graph
