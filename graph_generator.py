@@ -83,13 +83,6 @@ def make_dataframe(G):
         df['prob'][i] = list(nx.get_edge_attributes(subG, 'Probability').values())
     
     return df
-#%%
-
-#Infects specified nodes
-def infect_nodes(G, nodes_to_infect):
-    nodes = dict.fromkeys(nodes_to_infect, True)
-    nx.set_node_attributes(G, nodes, name = 'Infection')
-    return G
 
 #%%
 '''
