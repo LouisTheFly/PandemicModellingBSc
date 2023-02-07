@@ -9,6 +9,7 @@ import pandas as pd
 import networkx as nx
 import numpy as np
 import scipy as sp
+import matplotlib.pyplot as plt
 
 #%% Generating graphs in newtwork x
 
@@ -113,8 +114,17 @@ def returninfections(graph,array_prob,nodes):
     
     
 def remove_repeated(lst):
-    return list(set(lst)) 
+    return list(set(lst))
 
+#%%
+
+def plotting(x,y,title,xaxislabel,yaxislabel):
+    plt.plot(x,y)
+    plt.xlabel(xaxislabel)
+    plt.ylabel(yaxislabel)
+    plt.title(title)
+    plt.grid()
+    plt.show()
 
 
 

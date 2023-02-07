@@ -68,7 +68,7 @@ infectedlist=[0]
 '''
 Using Networkx
 '''
-time=10
+
 graph = gen.make_graph(10, graph_type = 'cycle') # dataset = False
 
 #infect node 0
@@ -78,11 +78,12 @@ gen.draw_graph(graph, draw_type = 'circular')
 #NOW NEED TO EDIT SO IT IGNORES ALREADY INFECTED NOES
 infectedlist=[0]
 time=20
+infectionsperday=[]
 for i in range(time):
-   #gen.draw_graph(graph, draw_type = 'circular')
-   #plt.show()
-   # nx.draw_circular(graph) #draw graph function will be inserted here
-   print(infectedlist)
+   gen.draw_graph(graph, draw_type = 'circular')
+   plt.show()
+   #print(infectedlist)
+   infectionswithinday=[]
    for j in range(len(infectedlist)):
         x=infectedlist[j]
         nodes=list(nx.neighbors(graph,x))# CHCECK IF THESE ARE IN THE SAME ORDER
@@ -92,11 +93,17 @@ for i in range(time):
         probs=list(array_probabilities.values())
         newinfections,graph=gen.returninfections(graph,probs,nodes)
         if len(newinfections) > 0:
+            infectionswithinday.append(len(newinfections))
             infectedlist.extend(newinfections)
             infectedlist=gen.remove_repeated(infectedlist)
+   infectionsperday.append(sum(infectionswithinday))
 
-
-
+#%%
+'''
+Graph of number infections per day against time
+'''
+time1=np.arange(time)
+gen.plotting(time1,infectionsperday,'infections per day','Time (in days','Number of infection')
 
 
     
