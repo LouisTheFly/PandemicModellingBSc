@@ -91,7 +91,7 @@ def infect_nodes(G, nodes_to_infect):
     nx.set_node_attributes(G, nodes, name = 'Infection')
     return G
 
-#%%
+#%% Testing
 '''
 G = make_graph(13, graph_type = 'connected')
 #df_test = make_dataframe(graph_test)

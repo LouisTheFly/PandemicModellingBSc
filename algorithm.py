@@ -11,6 +11,8 @@ import numpy as np
 import scipy as sp
 import matplotlib.pyplot as plt
 
+#%%
+
 def returninfections(graph,array_prob,nodes):
     infectionlist=(np.random.random(size=len(array_prob))<array_prob).astype(bool)
     infects=np.where(infectionlist)[0]
