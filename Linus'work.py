@@ -70,43 +70,26 @@ infectedlist=[0]
 Using Networkx
 '''
 
-graph = gen.make_graph(10, graph_type = 'cycle') # dataset = False
+graph = gen.make_graph(20, graph_type = 'cycle') # dataset = False
 
 #infect node 0
 graph = alg.infect_nodes(graph, [0])
 gen.draw_graph(graph, draw_type = 'circular')
-#%%
-#NOW NEED TO EDIT SO IT IGNORES ALREADY INFECTED NOES
-infectedlist=[0]
-time=20
-infectionsperday=[]
-for i in range(time):
-   gen.draw_graph(graph, draw_type = 'circular')
-   plt.show()
-   #print(infectedlist)
-   infectionswithinday=[]
-   for j in range(len(infectedlist)):
-        x=infectedlist[j]
-        nodes=list(nx.neighbors(graph,x))# CHCECK IF THESE ARE IN THE SAME ORDER
-        nodes1=copy.deepcopy(nodes)
-        nodes1.append(x)
-        array_probabilities=nx.get_edge_attributes(nx.subgraph(graph,nodes1),'Probability') #produces a list of probabilities corresponding to each edge
-        probs=list(array_probabilities.values())
-        newinfections,graph=alg.returninfections(graph,probs,nodes)
-        if len(newinfections) > 0:
-            infectionswithinday.append(len(newinfections))
-            infectedlist.extend(newinfections)
-            infectedlist=alg.remove_repeated(infectedlist)
-   infectionsperday.append(sum(infectionswithinday))
 
+#%%
+'''
+Running the algorithm
+'''
+time=20
+infectedlist=[0]
+infectionsperday=[]
+graph,infectedlist,infectionsperday=alg.rungraphalg(time,graph,infectedlist,infectionsperday)
 #%%
 '''
 Graph of number infections per day against time
 '''
 time1=np.arange(time)
-gen.plotting(time1,infectionsperday,'infections per day','Time (in days','Number of infection')
+alg.plotting(time1,infectionsperday,'infections per day','Time (in days','Number of infection')
 
 
-    
-    
     
