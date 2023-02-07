@@ -12,6 +12,7 @@ import numpy as np
 import pandas as pd
 import graph_generator as gen
 import copy
+import algorithm as alg
 
 #%%
 """
@@ -91,11 +92,11 @@ for i in range(time):
         nodes1.append(x)
         array_probabilities=nx.get_edge_attributes(nx.subgraph(graph,nodes1),'Probability') #produces a list of probabilities corresponding to each edge
         probs=list(array_probabilities.values())
-        newinfections,graph=gen.returninfections(graph,probs,nodes)
+        newinfections,graph=alg.returninfections(graph,probs,nodes)
         if len(newinfections) > 0:
             infectionswithinday.append(len(newinfections))
             infectedlist.extend(newinfections)
-            infectedlist=gen.remove_repeated(infectedlist)
+            infectedlist=alg.remove_repeated(infectedlist)
    infectionsperday.append(sum(infectionswithinday))
 
 #%%
