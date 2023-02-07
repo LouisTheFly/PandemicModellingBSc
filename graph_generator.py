@@ -29,6 +29,8 @@ def make_graph(nodes = 10, graph_type = 'complete'):
     
     return G
 
+#Watts-Stroghatz(WS)
+
 def draw_graph(G, draw_type = 'circular'):
 
     #Define shape of plot
