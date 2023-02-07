@@ -12,13 +12,16 @@ import scipy as sp
 import matplotlib.pyplot as plt
 import graph_generator as gen
 import copy
+
+#%%
+
 #Infects specified nodes
 def infect_nodes(G, nodes_to_infect):
     nodes = dict.fromkeys(nodes_to_infect, True)
     nx.set_node_attributes(G, nodes, name = 'Infection')
     return G
 
-#%%
+
 
 def returninfections(graph,array_prob,nodes):
     infectionlist=(np.random.random(size=len(array_prob))<array_prob).astype(bool)
@@ -29,14 +32,15 @@ def returninfections(graph,array_prob,nodes):
         return infectednodes,graph
     else:
         return  [],graph
-    
+
+#%% Utility
 def remove_repeated(lst):
     return list(set(lst))
 
-def plotting(x,y,title,xaxislabel,yaxislabel):
+def plotting(x,y,title = 'Default Title',x_label = 'Default X',y_label = 'Default Y'):
     plt.plot(x,y)
-    plt.xlabel(xaxislabel)
-    plt.ylabel(yaxislabel)
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
     plt.title(title)
     plt.grid()
     plt.show()
