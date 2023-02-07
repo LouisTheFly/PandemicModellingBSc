@@ -110,3 +110,20 @@ def returninfections(graph,array_prob,nodes):
         return infectednodes,graph
     else:
         return  [],graph
+    
+    
+def remove_repeated(lst):
+    return list(set(lst)) 
+
+
+
+
+
+
+
+
+
+
+
+
+
