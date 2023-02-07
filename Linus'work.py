@@ -73,7 +73,7 @@ Using Networkx
 graph = gen.make_graph(10, graph_type = 'cycle') # dataset = False
 
 #infect node 0
-graph = gen.infect_nodes(graph, [0])
+graph = alg.infect_nodes(graph, [0])
 gen.draw_graph(graph, draw_type = 'circular')
 #%%
 #NOW NEED TO EDIT SO IT IGNORES ALREADY INFECTED NOES
