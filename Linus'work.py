@@ -68,8 +68,8 @@ infectedlist=[0]
 '''
 Using Networkx
 '''
-time=10
-graph = gen.make_graph(10, graph_type = 'cycle') # dataset = False
+time=100
+graph = gen.make_graph(100, graph_type = 'cycle') # dataset = False
 
 #infect node 0
 graph = gen.infect_nodes(graph, [0])
@@ -77,10 +77,12 @@ gen.draw_graph(graph, draw_type = 'circular')
 #%%
 #NOW NEED TO EDIT SO IT IGNORES ALREADY INFECTED NOES
 infectedlist=[0]
-time=10
+time=100
 for i in range(time):
+   #gen.draw_graph(graph, draw_type = 'circular')
+   #plt.show()
    # nx.draw_circular(graph) #draw graph function will be inserted here
-   print(infectedlist)
+   #print(infectedlist)
    for j in range(len(infectedlist)):
         x=infectedlist[j]
         nodes=list(nx.neighbors(graph,x))# CHCECK IF THESE ARE IN THE SAME ORDER

@@ -89,6 +89,7 @@ def infect_nodes(G, nodes_to_infect):
     return G
 
 #%%
+'''
 G = make_graph(13, graph_type = 'connected')
 #df_test = make_dataframe(graph_test)
 
@@ -98,7 +99,7 @@ draw_graph(G, draw_type = 'circular')
 
 df = make_dataframe(G)
 
-
+'''
 #%%
 def returninfections(graph,array_prob,nodes):
     infectionlist=(np.random.random(size=len(array_prob))<array_prob).astype(bool)
