@@ -10,8 +10,8 @@ import matplotlib.pyplot as plt
 import random 
 import numpy as np
 import pandas as pd
-import graph_generator as gen
 import copy
+import graph_generator as gen
 import algorithm as alg
 
 #%%
@@ -77,13 +77,12 @@ graph = alg.infect_nodes(graph, [0])
 gen.draw_graph(graph, draw_type = 'circular')
 
 #%%
+
 '''
 Running the algorithm
 '''
 time=20
-infectedlist=[0]
-infectionsperday=[]
-graph,infectedlist,infectionsperday=alg.rungraphalg(time,graph,infectedlist,infectionsperday)
+graph,infectedlist,infectionsperday=alg.run_graph(graph, time, show = True, log = False, delay = False)
 #%%
 '''
 Graph of number infections per day against time
