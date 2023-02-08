@@ -13,17 +13,23 @@ import matplotlib.pyplot as plt
 
 #%% Generating graphs in newtwork x
 
+#Base Networkx graphs
 def make_graph(nodes = 10, graph_type = 'complete', base_edge_prob = 0.5):
     
     #Choose which graph to draw
-    if graph_type == 'circulant':
+    if graph_type == 'WS':
+        G = nx.watts_strogatz_graph(nodes, 4, 0.5, seed=None)
+        
+    elif graph_type == 'circulant':
         offsets1 = [1]*nodes
         I = nx.circulant_graph(nodes, offsets1)
         offsets2 = [2]*nodes
         J = nx.circulant_graph(nodes, offsets2)
         G = nx.compose(I,J)
+        
     elif graph_type == 'cycle':
         G = nx.cycle_graph(nodes)
+        
     else:
         G = nx.complete_graph(nodes)
     
@@ -37,7 +43,6 @@ def make_graph(nodes = 10, graph_type = 'complete', base_edge_prob = 0.5):
     
     return G
 
-#Watts-Stroghatz(WS)
 
 def draw_graph(G, draw_type = 'circular'):
 

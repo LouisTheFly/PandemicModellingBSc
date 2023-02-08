@@ -70,7 +70,7 @@ infectedlist=[0]
 Using Networkx
 '''
 
-graph = gen.make_graph(20, graph_type = 'cycle', base_edge_prob = 0.7) # dataset = False
+graph = gen.make_graph(15, graph_type = 'WS', base_edge_prob = 0.1) # dataset = False
 
 #infect node 0
 graph = alg.infect_nodes(graph, [0])
