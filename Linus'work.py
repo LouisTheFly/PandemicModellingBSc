@@ -70,7 +70,7 @@ infectedlist=[0]
 Using Networkx
 '''
 
-graph = gen.make_graph(20, graph_type = 'cycle') # dataset = False
+graph = gen.make_graph(20, graph_type = 'cycle', base_edge_prob = 0.7) # dataset = False
 
 #infect node 0
 graph = alg.infect_nodes(graph, [0])
@@ -81,7 +81,7 @@ gen.draw_graph(graph, draw_type = 'circular')
 '''
 Running the algorithm
 '''
-time=20
+time=30
 graph,infectedlist,infectionsperday=alg.run_graph(graph, time, show = True, log = False, delay = False)
 #%%
 '''

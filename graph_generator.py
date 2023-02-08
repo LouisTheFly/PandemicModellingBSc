@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 
 #%% Generating graphs in newtwork x
 
-def make_graph(nodes = 10, graph_type = 'complete'):
+def make_graph(nodes = 10, graph_type = 'complete', base_edge_prob = 0.5):
     
     #Choose which graph to draw
     if graph_type == 'cycle':
@@ -27,7 +27,7 @@ def make_graph(nodes = 10, graph_type = 'complete'):
     nx.set_node_attributes(G, False, name = 'Vaccination')
     
     #Add edge attributes
-    nx.set_edge_attributes(G, 0.5, name = 'Probability')        
+    nx.set_edge_attributes(G, base_edge_prob, name = 'Probability')        
     
     return G
 

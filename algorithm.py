@@ -35,24 +35,20 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False):
         #Run through each infected node
         for j in infected_nodes_list:
             #Find adjacent to j
-            neighbors = list(nx.neighbors(G,j))
+            edges_adj = nx.edges(G,j)
             
             #Make subgraph of these
-            neighbor_subG = nx.subgraph(G,neighbors)
+            local_subG = G.edge_subgraph(edges_adj)
             
             #Find the healthy ones
-            healthy_neighbors = find_healthy_nodes(neighbor_subG)
+            healthy_neighbors = find_healthy_nodes(local_subG)
             
             #Check if there are any possible nodes to infect
             if len(healthy_neighbors) == 0:
                 continue
             else:
-                #Make subgraph of J and its healthy neighbours
-                healthy_neighbors.append(j)
-                subG = nx.subgraph(G,healthy_neighbors)
-                
                 #Return list of new nodes to infect
-                nodes_to_infect = calculate_infections(subG, j)
+                nodes_to_infect = calculate_infections(local_subG, j)
                 
                 #Check if any new nodes have actually been infected
                 if len(nodes_to_infect) == 0:
