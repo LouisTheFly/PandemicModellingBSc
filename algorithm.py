@@ -99,9 +99,20 @@ def infect_nodes(G, nodes_to_infect):
     nx.set_node_attributes(G, nodes, name = 'Infection')
     return G
 
+#Vaccinate specified nodes
+def vaccinate_nodes(G, nodes_to_vaccinate):
+    nodes = dict.fromkeys(nodes_to_vaccinate, True)
+    nx.set_node_attributes(G, nodes, name = 'Vaccination')
+    return G
+
 #Finds any nodes currently infected in a graph
 def find_infected_nodes(G):
     nodes = list({k:v for (k,v) in nx.get_node_attributes(G, 'Infection').items() if v==True})
+    return nodes
+
+#Finds any nodes currently vaccinated in a graph
+def find_vaccinated_nodes(G):
+    nodes = list({k:v for (k,v) in nx.get_node_attributes(G, 'Vaccination').items() if v==True})
     return nodes
 
 #Finds any nodes currently healthy in a graph
