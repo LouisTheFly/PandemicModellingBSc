@@ -16,7 +16,13 @@ import matplotlib.pyplot as plt
 def make_graph(nodes = 10, graph_type = 'complete', base_edge_prob = 0.5):
     
     #Choose which graph to draw
-    if graph_type == 'cycle':
+    if graph_type == 'circulant':
+        offsets1 = [1]*nodes
+        I = nx.circulant_graph(nodes, offsets1)
+        offsets2 = [2]*nodes
+        J = nx.circulant_graph(nodes, offsets2)
+        G = nx.compose(I,J)
+    elif graph_type == 'cycle':
         G = nx.cycle_graph(nodes)
     else:
         G = nx.complete_graph(nodes)
