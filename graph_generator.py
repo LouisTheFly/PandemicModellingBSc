@@ -21,12 +21,8 @@ def make_graph(nodes = 10, graph_type = 'complete', base_edge_prob = 0.5):
         G = nx.watts_strogatz_graph(nodes, 4, 0.5, seed=None)
         
     elif graph_type == 'circulant':
-        offsets1 = [1]*nodes
-        I = nx.circulant_graph(nodes, offsets1)
-        offsets2 = [2]*nodes
-        J = nx.circulant_graph(nodes, offsets2)
-        G = nx.compose(I,J)
-        
+        G = nx.watts_strogatz_graph(nodes, 4, 0, seed=None)
+
     elif graph_type == 'cycle':
         G = nx.cycle_graph(nodes)
         
