@@ -154,8 +154,11 @@ def calculate_infections(subG, centre):
 def remove_repeated(lst):
     return list(set(lst))
 
-def plotting(x,y,title = 'Default Title',x_label = 'Default X',y_label = 'Default Y'):
-    plt.plot(x,y)
+def plotting(x,y, g_type = 'line', title = 'Default Title',x_label = 'Default X',y_label = 'Default Y'):
+    if g_type == 'bar':
+        plt.bar(x,y)
+    else:
+        plt.plot(x,y)
     plt.xlabel(x_label)
     plt.ylabel(y_label)
     plt.title(title)
