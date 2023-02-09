@@ -51,8 +51,12 @@ def draw_graph(G, draw_type = 'circular'):
     #Find infected nodes to colour red
     infected_nodes = list({k:v for (k,v) in nx.get_node_attributes(G, 'Infection').items() if v==1})
     
+    #Find infected nodes to colour red
+    vaccinated_nodes = list({k:v for (k,v) in nx.get_node_attributes(G, 'Vaccination').items() if v==1})
+    
     #Draw Nodes, Edges, Labels
     nx.draw_networkx_nodes(G, pos, node_color="tab:blue") #Healthy
+    nx.draw_networkx_nodes(G, pos, nodelist=vaccinated_nodes, node_color="tab:green") #Vaccinated
     nx.draw_networkx_nodes(G, pos, nodelist=infected_nodes, node_color="tab:red") #Infected
     nx.draw_networkx_edges(G, pos)
     nx.draw_networkx_labels(G, pos)

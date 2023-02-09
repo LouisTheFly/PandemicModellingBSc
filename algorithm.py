@@ -12,6 +12,7 @@ import scipy as sp
 import matplotlib.pyplot as plt
 import graph_generator as gen
 from time import sleep
+from collections import OrderedDict
 
 #%%
 
@@ -118,18 +119,35 @@ def find_healthy_nodes(G):
 
 #For given nodes and edges, returns which have been infected
 def calculate_infections(subG, centre):
+    #Create empty bin for nodes that get infected
     infected_nodes = []
-    edge_prob = nx.get_edge_attributes(subG,'Probability')
+    
+    #Create and order dictionaries of edges and vaccination status
+    edge_prob = nx.get_edge_attributes(subG, 'Probability')
+    edge_prob = OrderedDict(sorted(edge_prob.items()))
+
+    vacc_status = nx.get_node_attributes(subG, 'Vaccination')
+    vacc_status = OrderedDict(sorted(vacc_status.items()))
     
     #Create lists of keys and related values
     edge_prob_keys = list(edge_prob.keys())
     edge_prob_vals = list(edge_prob.values())
+    vacc_status_keys = list(vacc_status.keys())
+    vacc_status_vals = list(vacc_status.values())
+
+    #Find the central node in the vaccination status and remove
+    vacc_centre = [i for i in range(len(vacc_status_keys)) if vacc_status_keys[i] == centre]
+    del vacc_status_vals[vacc_centre[0]]
 
     #Iterate through vals checking if they exceed the rand values, then append to list
     for i in range(len(edge_prob)):
         if np.random.random() <= edge_prob_vals[i]:
             node_found = [x for x in edge_prob_keys[i] if x != centre]
-            infected_nodes.append(node_found[0])
+
+            #Check they arent vaccinated
+            if vacc_status_vals[i] == False:
+                infected_nodes.append(node_found[0])
+                
     return infected_nodes
 
 #%% Utility
