@@ -40,7 +40,6 @@ graph = alg.vaccinate_nodes(graph, nodes_to_vaccinate)
 
 ########Iterating########
 
-
 graph,infectedlist,infectionsperday=alg.run_graph(graph, time_steps, show = False, log = False, delay = False)
 
 ########Graphing########
