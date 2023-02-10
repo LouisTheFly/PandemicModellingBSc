@@ -26,7 +26,7 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False):
     
     #Place to store count of each day's new infections
     daily_infections_list = []
-    
+    totalnodes=len(G)
     #Each time_step
     for i in tqdm(range(time_steps)):
         
@@ -67,7 +67,7 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False):
         new_inf_count = len(infected_nodes_list) - infected_nodes_count
         infected_nodes_count = len(infected_nodes_list)
         daily_infections_list.append(new_inf_count)
-        
+      
         #For visualising the graph
         if show == True:
             gen.draw_graph(G)
@@ -82,7 +82,11 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False):
         #For adding delay
         if delay == True:
             sleep(1)
-    
+          
+       # if infected_nodes_count==totalnodes:
+        #    print('day=',i)
+         #   return G, infected_nodes_list, daily_infections_list
+        
     #For checking validity of spread
     if log == True:
         print('Infections to date...',sum(daily_infections_list))

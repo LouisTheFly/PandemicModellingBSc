@@ -18,7 +18,7 @@ import algorithm as alg
 
 ##########Setup#########
 
-graph = gen.make_graph(100, graph_type = 'WS', base_edge_prob = 0.1) # dataset = False
+graph = gen.make_graph(10000, graph_type = 'WS', base_edge_prob = 0.5) # dataset = False
 
 #Infect nodes
 graph = alg.infect_nodes(graph, [0])
@@ -31,7 +31,7 @@ graph = alg.infect_nodes(graph, [0])
 
 ########Iterating########
 
-time=200
+time=1000
 graph,infectedlist,infectionsperday=alg.run_graph(graph, time, show = False, log = False, delay = False)
 
 ########Graphing########
