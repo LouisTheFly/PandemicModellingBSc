@@ -105,6 +105,13 @@ def vaccinate_nodes(G, nodes_to_vaccinate):
     nx.set_node_attributes(G, nodes, name = 'Vaccination')
     return G
 
+def vaccinate_random_nodes(G, amount_to_vaccinate):
+    healthy_nodes = find_healthy_nodes(G)
+    nodes_to_vaccinate = np.random.choice(healthy_nodes, size = amount_to_vaccinate, replace = False)
+    nodes = dict.fromkeys(nodes_to_vaccinate, True)
+    nx.set_node_attributes(G, nodes, name = 'Vaccination')
+    return G
+
 #Finds any nodes currently infected in a graph
 def find_infected_nodes(G):
     nodes = list({k:v for (k,v) in nx.get_node_attributes(G, 'Infection').items() if v==True})
