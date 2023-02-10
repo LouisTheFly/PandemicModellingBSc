@@ -18,7 +18,7 @@ import algorithm as alg
 
 ##########Setup#########
 
-graph = gen.make_graph(10000, graph_type = 'WS', base_edge_prob = 0.5) # dataset = False
+graph = gen.make_graph(10000, graph_type = 'WS', base_edge_prob = 0.01) # dataset = False
 
 #Infect nodes
 graph = alg.infect_nodes(graph, [0])
