@@ -26,7 +26,10 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False):
     
     #Place to store count of each day's new infections
     daily_infections_list = []
+    
+    #Calculate total node count
     totalnodes=len(G)
+    
     #Each time_step
     for i in tqdm(range(time_steps)):
         
@@ -82,10 +85,6 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False):
         #For adding delay
         if delay == True:
             sleep(1)
-          
-       # if infected_nodes_count==totalnodes:
-        #    print('day=',i)
-         #   return G, infected_nodes_list, daily_infections_list
         
     #For checking validity of spread
     if log == True:
