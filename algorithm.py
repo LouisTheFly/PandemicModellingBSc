@@ -26,7 +26,10 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False):
     
     #Place to store count of each day's new infections
     daily_infections_list = []
+    
+    #Calculate total node count
     totalnodes=len(G)
+    
     #Each time_step
     for i in tqdm(range(time_steps)):
         
@@ -82,10 +85,6 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False):
         #For adding delay
         if delay == True:
             sleep(1)
-          
-       # if infected_nodes_count==totalnodes:
-        #    print('day=',i)
-         #   return G, infected_nodes_list, daily_infections_list
         
     #For checking validity of spread
     if log == True:
@@ -102,6 +101,13 @@ def infect_nodes(G, nodes_to_infect):
 
 #Vaccinate specified nodes
 def vaccinate_nodes(G, nodes_to_vaccinate):
+    nodes = dict.fromkeys(nodes_to_vaccinate, True)
+    nx.set_node_attributes(G, nodes, name = 'Vaccination')
+    return G
+
+def vaccinate_random_nodes(G, amount_to_vaccinate):
+    healthy_nodes = find_healthy_nodes(G)
+    nodes_to_vaccinate = np.random.choice(healthy_nodes, size = amount_to_vaccinate, replace = False)
     nodes = dict.fromkeys(nodes_to_vaccinate, True)
     nx.set_node_attributes(G, nodes, name = 'Vaccination')
     return G
