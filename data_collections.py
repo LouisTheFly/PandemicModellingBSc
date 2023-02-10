@@ -17,23 +17,32 @@ import algorithm as alg
 #%% Testing
 
 ##########Setup#########
+time_steps = 200
+show = False
+log = False
 
-graph = gen.make_graph(100, graph_type = 'WS', base_edge_prob = 0.1) # dataset = False
+nodes = 25
+graph_type = 'WS'
+base_edge_prob = 0.1
+nodes_to_infect = [0]
+nodes_to_vaccinate = [3,7]
+
+graph = gen.make_graph(nodes = 25, graph_type = 'cycle', base_edge_prob = 0.5) # dataset = False
 
 #Infect nodes
-graph = alg.infect_nodes(graph, [0])
+graph = alg.infect_nodes(graph, nodes_to_infect)
 
 #Vaccinate nodes
-#graph = alg.vaccinate_nodes(graph, [1,7,16,11,20,22])
+graph = alg.vaccinate_nodes(graph, nodes_to_vaccinate)
 
 #Drawing
 #gen.draw_graph(graph, draw_type = 'circular')
 
 ########Iterating########
 
-time=200
-graph,infectedlist,infectionsperday=alg.run_graph(graph, time, show = False, log = False, delay = False)
+
+graph,infectedlist,infectionsperday=alg.run_graph(graph, time_steps, show = False, log = False, delay = False)
 
 ########Graphing########
 
-alg.plotting(np.arange(time),infectionsperday, 'bar', 'Infections per Day, Tot = %s'%(len(infectedlist)), 'Time (in days)', 'Number of Infections')
+alg.plotting(np.arange(time_steps),infectionsperday, 'bar', 'Infections per Day, Tot = %s'%(len(infectedlist)), 'Time (in days)', 'Number of Infections')
