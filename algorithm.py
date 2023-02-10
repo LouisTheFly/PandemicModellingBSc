@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import graph_generator as gen
 from time import sleep
 from collections import OrderedDict
-
+from tqdm import tqdm
 #%%
 
 #Main Graph Time Iterator 
@@ -28,7 +28,7 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False):
     daily_infections_list = []
     
     #Each time_step
-    for i in range(time_steps):
+    for i in tqdm(range(time_steps)):
         
         #Place to store the new nodes infected that day
         infections_within_day = []
