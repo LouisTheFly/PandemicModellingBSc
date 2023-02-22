@@ -21,9 +21,6 @@ time_steps = 10
 show = True
 log = False
 
-<<<<<<< HEAD
-graph = gen.make_graph(10000, graph_type = 'WS', base_edge_prob = 0.01) # dataset = False
-=======
 nodes = 10
 graph_type = 'WS'
 base_edge_prob = 1
@@ -32,7 +29,6 @@ nodes_to_infect = [0]
 amount_to_vaccinate = 4
 
 graph = gen.make_graph(nodes = nodes, graph_type = graph_type, base_edge_prob = base_edge_prob) # dataset = False
->>>>>>> 4a5d605f691d77ec9518fc9c330e067c6df34d2d
 
 #Infect nodes
 graph = alg.infect_nodes(graph, nodes_to_infect)
