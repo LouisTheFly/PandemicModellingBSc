@@ -21,9 +21,9 @@ from tqdm import tqdm
 def run_graph(G, time_steps = 20, show = False, log = False, delay = False):
     
     #Finds any infected nodes in the graph
-    infected_nodes_list = []
+    infected_nodes_list = [] #Contains a list of node keys infected at any point
     infected_nodes_list += find_infected_nodes(G)
-    infected_nodes_count = len(infected_nodes_list)
+    infected_nodes_count = len(infected_nodes_list) #Number of nodes infected at any point
     
     
     #Place to store count of each day's new infections
