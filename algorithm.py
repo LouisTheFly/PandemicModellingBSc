@@ -11,6 +11,7 @@ import numpy as np
 import scipy as sp
 import matplotlib.pyplot as plt
 import graph_generator as gen
+import sys
 from time import sleep
 from collections import OrderedDict
 from tqdm import tqdm
@@ -71,6 +72,12 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False):
         infected_nodes_count = len(infected_nodes_list)
         daily_infections_list.append(new_inf_count)
       
+        
+        #if infected_nodes_count >= len(G)-3:
+            #print('Nodes to be infected: ',nodes_to_infect)
+            #sys.exit('Vaccinated node was infected')
+        
+      
         #For visualising the graph
         if show == True:
             gen.draw_graph(G)
@@ -84,7 +91,8 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False):
             
         #For adding delay
         if delay == True:
-            sleep(1)
+            sleep(1)          
+            
         
     #For checking validity of spread
     if log == True:
@@ -146,18 +154,20 @@ def calculate_infections(subG, centre):
     vacc_status_vals = list(vacc_status.values())
 
     #Find the central node in the vaccination status and remove
-    vacc_centre = [i for i in range(len(vacc_status_keys)) if vacc_status_keys[i] == centre]
-    del vacc_status_vals[vacc_centre[0]]
+    vacc_centre_index = [i for i, value in enumerate(vacc_status_keys) if value == centre][0]
+    del vacc_status_keys[vacc_centre_index]
+    del vacc_status_vals[vacc_centre_index]
 
     #Iterate through vals checking if they exceed the rand values, then append to list
     for i in range(len(edge_prob)):
         if np.random.random() <= edge_prob_vals[i]:
-            node_found = [x for x in edge_prob_keys[i] if x != centre]
+            node_found = [x for x in edge_prob_keys[i] if x != centre][0]
 
-            #Check they arent vaccinated
-            if vacc_status_vals[i] == False:
-                infected_nodes.append(node_found[0])
-                
+            #Check vaccination doesnt prevent infection
+            vacc_status_index = [i for i, value in enumerate(vacc_status_keys) if value == node_found][0]
+            if vacc_status_vals[vacc_status_index] == False:
+                infected_nodes.append(node_found)
+               
     return infected_nodes
 
 #%% Utility
