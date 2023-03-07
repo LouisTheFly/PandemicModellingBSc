@@ -14,7 +14,8 @@ import matplotlib.pyplot as plt
 #%% Generating graphs in newtwork x
 
 #Base Networkx graphs
-def make_graph(nodes = 10, graph_type = 'complete', base_edge_prob = 0.5):
+#delete the =10 and =0.5?
+def make_graph(nodes = 10 , graph_type = 'complete', base_edge_prob = 0.5):
     
     #Choose which graph to draw
     if graph_type == 'WS':

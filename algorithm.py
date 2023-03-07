@@ -31,6 +31,11 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False):
     #Calculate total node count
     totalnodes=len(G)
     
+    #finding days infected plus recovery period etc
+    #starts with the initially infected nodes
+
+    listofnodes=np.array(infected_nodes_list)
+    daysinfected=np.array([1]*len(listofnodes))
     #Each time_step
     for i in tqdm(range(time_steps)):
         
@@ -66,9 +71,9 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False):
         #Update overall infected list and remove duplicate nodes
         infected_nodes_list += infections_within_day
         infected_nodes_list = [*set(infected_nodes_list)]
-        
         #Find how many new nodes are infected and update lists and counters
-        new_inf_count = len(infected_nodes_list) - infected_nodes_count
+        #new_inf_count = len(infected_nodes_list) - infected_nodes_count
+        new_inf_count = len(infections_within_day)
         infected_nodes_count = len(infected_nodes_list)
         daily_infections_list.append(new_inf_count)
       
@@ -85,8 +90,18 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False):
             
         #For adding delay
         if delay == True:
-            sleep(1)
-        
+            sleep(1)  
+        daysinfected=daysinfected+1
+        listofnodes=np.append(listofnodes,daily_infections_list)
+        daysinfected=np.append(daysinfected,[1]*len(daily_infections_list))
+        while np.max(daysinfected)>=5:
+            curednodes=np.where(np.array(daysinfected)==5)[0]
+            cure_nodes(G,curednodes)
+            infected_nodes_array=np.array(infected_nodes_list)
+            infected_nodes_list=(np.delete(infected_nodes_array,curednodes)).tolist()
+            #deleting the cured nodes from the infected list
+            listofnodes=np.delete(listofnodes,curednodes)
+            daysinfected=np.delete(daysinfected,curednodes)
     #For checking validity of spread
     if log == True:
         print('Infections to date...',sum(daily_infections_list))
@@ -99,7 +114,13 @@ def infect_nodes(G, nodes_to_infect):
     nodes = dict.fromkeys(nodes_to_infect, True)
     nx.set_node_attributes(G, nodes, name = 'Infection')    
     return G
-
+'''
+iadd another function adding a vaccination stance as well, i.e infective for 5 days but still 
+'''
+def cure_nodes(G, nodes_to_cure):
+    nodes = dict.fromkeys(nodes_to_cure, False)
+    nx.set_node_attributes(G, nodes, name = 'Infection')    
+    return G
 #Vaccinate specified nodes
 def vaccinate_nodes(G, nodes_to_vaccinate):
     nodes = dict.fromkeys(nodes_to_vaccinate, True)

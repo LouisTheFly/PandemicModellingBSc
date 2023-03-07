@@ -70,10 +70,10 @@ infectedlist=[0]
 Using Networkx
 '''
 
-graph = gen.make_graph(100, graph_type = 'WS', base_edge_prob = 0.1) # dataset = False
+graph = gen.make_graph(10000, graph_type = 'WS', base_edge_prob = 0.1) # dataset = False
 
 #Infect nodes
-graph = alg.infect_nodes(graph, [0])
+graph = alg.infect_nodes(graph, [0,9,19,29,39,49,59,69,79,89,99])
 
 #Vaccinate nodes
 #graph = alg.vaccinate_nodes(graph, [1,7,16,11,20,22])
@@ -85,7 +85,7 @@ graph = alg.infect_nodes(graph, [0])
 '''
 Running the algorithm
 '''
-time=200
+time=100
 graph,infectedlist,infectionsperday=alg.run_graph(graph, time, show = False, log = False, delay = False)
 
 '''
@@ -93,5 +93,5 @@ Graph of number infections per day against time
 '''
 alg.plotting(np.arange(time),infectionsperday, 'bar', 'Infections per Day, Tot = %s'%(len(infectedlist)), 'Time (in days)', 'Number of Infections')
 
-
-    
+#%%
+ 
