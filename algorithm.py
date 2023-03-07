@@ -77,16 +77,12 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False):
         new_inf_count = len(infections_within_day)
         infected_nodes_count = len(infected_nodes_list)
         daily_infections_list.append(new_inf_count)
-      
-        
         #if infected_nodes_count >= len(G)-3:
             #print('Nodes to be infected: ',nodes_to_infect)
             #sys.exit('Vaccinated node was infected')
-        
-      
         daysinfected=daysinfected+1
-        listofnodes=np.append(listofnodes,daily_infections_list)
-        daysinfected=np.append(daysinfected,[1]*len(daily_infections_list))
+        listofnodes=np.append(listofnodes,infections_within_day)
+        daysinfected=np.append(daysinfected,[1]*len(infections_within_day))
         while np.max(daysinfected)>=5:
             curednodes=np.where(np.array(daysinfected)==5)[0]
             cure_nodes(G,curednodes)
