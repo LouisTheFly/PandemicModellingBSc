@@ -11,6 +11,7 @@ import numpy as np
 import scipy as sp
 import matplotlib.pyplot as plt
 import graph_generator as gen
+import sys
 from time import sleep
 from collections import OrderedDict
 from tqdm import tqdm
@@ -77,6 +78,12 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False):
         infected_nodes_count = len(infected_nodes_list)
         daily_infections_list.append(new_inf_count)
       
+        
+        #if infected_nodes_count >= len(G)-3:
+            #print('Nodes to be infected: ',nodes_to_infect)
+            #sys.exit('Vaccinated node was infected')
+        
+      
         #For visualising the graph
         if show == True:
             gen.draw_graph(G)
@@ -123,14 +130,14 @@ def cure_nodes(G, nodes_to_cure):
     return G
 #Vaccinate specified nodes
 def vaccinate_nodes(G, nodes_to_vaccinate):
-    nodes = dict.fromkeys(nodes_to_vaccinate, True)
+    nodes = dict.fromkeys(nodes_to_vaccinate, 0.7)
     nx.set_node_attributes(G, nodes, name = 'Vaccination')
     return G
 
 def vaccinate_random_nodes(G, amount_to_vaccinate):
     healthy_nodes = find_healthy_nodes(G)
     nodes_to_vaccinate = np.random.choice(healthy_nodes, size = amount_to_vaccinate, replace = False)
-    nodes = dict.fromkeys(nodes_to_vaccinate, True)
+    nodes = dict.fromkeys(nodes_to_vaccinate, 0.7)
     nx.set_node_attributes(G, nodes, name = 'Vaccination')
     return G
 
@@ -141,7 +148,7 @@ def find_infected_nodes(G):
 
 #Finds any nodes currently vaccinated in a graph
 def find_vaccinated_nodes(G):
-    nodes = list({k:v for (k,v) in nx.get_node_attributes(G, 'Vaccination').items() if v==True})
+    nodes = list({k:v for (k,v) in nx.get_node_attributes(G, 'Vaccination').items() if v!=0})
     return nodes
 
 #Finds any nodes currently healthy in a graph
@@ -168,29 +175,42 @@ def calculate_infections(subG, centre):
     vacc_status_vals = list(vacc_status.values())
 
     #Find the central node in the vaccination status and remove
-    vacc_centre = [i for i in range(len(vacc_status_keys)) if vacc_status_keys[i] == centre]
-    del vacc_status_vals[vacc_centre[0]]
+    vacc_centre_index = [i for i, value in enumerate(vacc_status_keys) if value == centre][0]
+    del vacc_status_keys[vacc_centre_index]
+    del vacc_status_vals[vacc_centre_index]
 
     #Iterate through vals checking if they exceed the rand values, then append to list
     for i in range(len(edge_prob)):
         if np.random.random() <= edge_prob_vals[i]:
-            node_found = [x for x in edge_prob_keys[i] if x != centre]
+            node_found = [x for x in edge_prob_keys[i] if x != centre][0]
 
-            #Check they arent vaccinated
-            if vacc_status_vals[i] == False:
-                infected_nodes.append(node_found[0])
-                
+            #Check vaccination doesnt prevent infection
+            vacc_status_index = [i for i, value in enumerate(vacc_status_keys) if value == node_found][0]
+            if np.random.random() >= vacc_status_vals[vacc_status_index]:
+                infected_nodes.append(node_found)
+               
     return infected_nodes
 
 #%% Utility
 def remove_repeated(lst):
     return list(set(lst))
 
-def plotting(x,y, g_type = 'line', title = 'Default Title',x_label = 'Default X',y_label = 'Default Y'):
+def plotting(x,y, g_type = 'line', title = 'Default Title',x_label = 'Default X',y_label = 'Default Y', five_day_average = False):
+    
+    #Line or bar chart
     if g_type == 'bar':
-        plt.bar(x,y)
+        plt.bar(x,y, width = 1)
     else:
         plt.plot(x,y)
+    
+    #Adds a 5 day moving average line
+    if five_day_average == True:
+        z = np.empty(len(x))
+        for i in range(2,len(x)-2):
+            z[i] = (y[i-2]+y[i-1]+y[i]+y[i+1]+y[i+2])/5
+        plt.plot(x[2:-2],z[2:-2], c='red')
+    
+    #Visual stuff
     plt.xlabel(x_label)
     plt.ylabel(y_label)
     plt.title(title)
