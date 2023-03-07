@@ -17,11 +17,11 @@ import algorithm as alg
 #%% Testing
 
 ##########Setup#########
-time_steps = 200
+time_steps = 100
 show = False
 log = False
 
-nodes = 1000
+nodes = 2000
 graph_type = 'WS'
 base_edge_prob = 0.05
 nodes_to_infect = [0]

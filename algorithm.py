@@ -177,7 +177,7 @@ def remove_repeated(lst):
 
 def plotting(x,y, g_type = 'line', title = 'Default Title',x_label = 'Default X',y_label = 'Default Y'):
     if g_type == 'bar':
-        plt.bar(x,y)
+        plt.bar(x,y, width = 1)
     else:
         plt.plot(x,y)
     plt.xlabel(x_label)
