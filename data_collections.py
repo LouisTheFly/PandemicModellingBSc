@@ -20,6 +20,7 @@ import algorithm as alg
 time_steps = 100
 show = False
 log = False
+five_day_average = True
 
 nodes = 2000
 graph_type = 'WS'
@@ -48,4 +49,4 @@ graph,infectedlist,infectionsperday=alg.run_graph(graph, time_steps, show = show
 
 ########Graphing########
 
-alg.plotting(np.arange(time_steps),infectionsperday, 'bar', 'Infections per Day, Tot = %s'%(len(infectedlist)), 'Time (in days)', 'Number of Infections')
+alg.plotting(np.arange(time_steps),infectionsperday, 'bar', 'Infections per Day, Tot = %s'%(len(infectedlist)), 'Time (in days)', 'Number of Infections', five_day_average = five_day_average)

@@ -175,11 +175,22 @@ def calculate_infections(subG, centre):
 def remove_repeated(lst):
     return list(set(lst))
 
-def plotting(x,y, g_type = 'line', title = 'Default Title',x_label = 'Default X',y_label = 'Default Y'):
+def plotting(x,y, g_type = 'line', title = 'Default Title',x_label = 'Default X',y_label = 'Default Y', five_day_average = False):
+    
+    #Line or bar chart
     if g_type == 'bar':
         plt.bar(x,y, width = 1)
     else:
         plt.plot(x,y)
+    
+    #Adds a 5 day moving average line
+    if five_day_average == True:
+        z = np.empty(len(x))
+        for i in range(2,len(x)-2):
+            z[i] = (y[i-2]+y[i-1]+y[i]+y[i+1]+y[i+2])/5
+        plt.plot(x[2:-2],z[2:-2], c='red')
+    
+    #Visual stuff
     plt.xlabel(x_label)
     plt.ylabel(y_label)
     plt.title(title)
