@@ -17,17 +17,18 @@ import algorithm as alg
 #%% Testing
 
 ##########Setup#########
-time_steps = 100
+time_steps = 80
 show = False
 log = False
+plot = True
 five_day_average = True
 
-nodes = 2000
+nodes = 1000
 graph_type = 'WS'
-base_edge_prob = 0.05
+base_edge_prob = 0.1
 nodes_to_infect = [0]
 #nodes_to_vaccinate = [5,7]
-amount_to_vaccinate = 0
+amount_to_vaccinate = 500
 
 graph = gen.make_graph(nodes = nodes, graph_type = graph_type, base_edge_prob = base_edge_prob) # dataset = False
 
@@ -48,5 +49,5 @@ if show == True:
 graph,infectedlist,infectionsperday=alg.run_graph(graph, time_steps, show = show, log = log, delay = False)
 
 ########Graphing########
-
-alg.plotting(np.arange(time_steps),infectionsperday, 'bar', 'Infections per Day, Tot = %s'%(len(infectedlist)), 'Time (in days)', 'Number of Infections', five_day_average = five_day_average)
+if plot == True:
+    alg.plotting(np.arange(time_steps),infectionsperday, 'bar', 'Infections per Day, Tot = %s'%(len(infectedlist)), 'Time (in days)', 'Number of Infections', five_day_average = five_day_average)

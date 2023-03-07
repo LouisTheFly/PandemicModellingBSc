@@ -110,14 +110,14 @@ def infect_nodes(G, nodes_to_infect):
 
 #Vaccinate specified nodes
 def vaccinate_nodes(G, nodes_to_vaccinate):
-    nodes = dict.fromkeys(nodes_to_vaccinate, True)
+    nodes = dict.fromkeys(nodes_to_vaccinate, 0.7)
     nx.set_node_attributes(G, nodes, name = 'Vaccination')
     return G
 
 def vaccinate_random_nodes(G, amount_to_vaccinate):
     healthy_nodes = find_healthy_nodes(G)
     nodes_to_vaccinate = np.random.choice(healthy_nodes, size = amount_to_vaccinate, replace = False)
-    nodes = dict.fromkeys(nodes_to_vaccinate, True)
+    nodes = dict.fromkeys(nodes_to_vaccinate, 0.7)
     nx.set_node_attributes(G, nodes, name = 'Vaccination')
     return G
 
@@ -128,7 +128,7 @@ def find_infected_nodes(G):
 
 #Finds any nodes currently vaccinated in a graph
 def find_vaccinated_nodes(G):
-    nodes = list({k:v for (k,v) in nx.get_node_attributes(G, 'Vaccination').items() if v==True})
+    nodes = list({k:v for (k,v) in nx.get_node_attributes(G, 'Vaccination').items() if v!=0})
     return nodes
 
 #Finds any nodes currently healthy in a graph
@@ -166,7 +166,7 @@ def calculate_infections(subG, centre):
 
             #Check vaccination doesnt prevent infection
             vacc_status_index = [i for i, value in enumerate(vacc_status_keys) if value == node_found][0]
-            if vacc_status_vals[vacc_status_index] == False:
+            if np.random.random() >= vacc_status_vals[vacc_status_index]:
                 infected_nodes.append(node_found)
                
     return infected_nodes
