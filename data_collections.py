@@ -17,6 +17,7 @@ import algorithm as alg
 #%% Testing
 
 ##########Setup#########
+
 time_steps = 80
 show = True
 log = False
@@ -30,6 +31,7 @@ base_edge_prob = 0.1
 amount_to_infect = 4
 #nodes_to_vaccinate = [5,7]
 amount_to_vaccinate = 5
+
 
 graph = gen.make_graph(nodes = nodes, graph_type = graph_type, base_edge_prob = base_edge_prob) # dataset = False
 
