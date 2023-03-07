@@ -31,7 +31,7 @@ def make_graph(nodes = 10, graph_type = 'complete', base_edge_prob = 0.5):
     
     #Add node attributes
     nx.set_node_attributes(G, False, name = 'Infection')
-    
+    nx.set_node_attributes(G,False, name = 'Days Infected')
     nx.set_node_attributes(G, False, name = 'Vaccination')
     
     #Add edge attributes

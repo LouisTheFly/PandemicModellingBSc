@@ -24,6 +24,7 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False):
     infected_nodes_list += find_infected_nodes(G)
     infected_nodes_count = len(infected_nodes_list)
     
+    
     #Place to store count of each day's new infections
     daily_infections_list = []
     
@@ -96,7 +97,7 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False):
 #Infects specified nodes
 def infect_nodes(G, nodes_to_infect):
     nodes = dict.fromkeys(nodes_to_infect, True)
-    nx.set_node_attributes(G, nodes, name = 'Infection')
+    nx.set_node_attributes(G, nodes, name = 'Infection')    
     return G
 
 #Vaccinate specified nodes
