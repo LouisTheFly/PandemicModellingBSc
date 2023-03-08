@@ -72,14 +72,14 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False):
         #Update overall infected list and remove duplicate nodes
         infected_nodes_list += infections_within_day
         infected_nodes_list = [*set(infected_nodes_list)]
+        
         #Find how many new nodes are infected and update lists and counters
         #new_inf_count = len(infected_nodes_list) - infected_nodes_count
         new_inf_count = len(infections_within_day)
         infected_nodes_count = len(infected_nodes_list)
         daily_infections_list.append(new_inf_count)
-        #if infected_nodes_count >= len(G)-3:
-            #print('Nodes to be infected: ',nodes_to_infect)
-            #sys.exit('Vaccinated node was infected')
+        
+        
         daysinfected=daysinfected+1
         listofnodes=np.append(listofnodes,infections_within_day)
         daysinfected=np.append(daysinfected,[1]*len(infections_within_day))

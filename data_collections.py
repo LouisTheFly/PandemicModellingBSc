@@ -25,12 +25,12 @@ plot = True
 five_day_average = True
 
 nodes = 20
-graph_type = 'WS'
-base_edge_prob = 0.1
+graph_type = 'cycle'
+base_edge_prob = 1
 #nodes_to_infect = [0]
-amount_to_infect = 4
+amount_to_infect = 1
 #nodes_to_vaccinate = [5,7]
-amount_to_vaccinate = 5
+amount_to_vaccinate = 0
 
 
 graph = gen.make_graph(nodes = nodes, graph_type = graph_type, base_edge_prob = base_edge_prob) # dataset = False
