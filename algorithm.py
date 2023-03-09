@@ -30,7 +30,7 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
     daily_infections_list = []
     
     #Calculate total node count
-    total_nodes = len(G)
+    #total_nodes = nx.number_of_nodes(G)
     
     #finding days infected plus recovery period etc
     #starts with the initially infected nodes
