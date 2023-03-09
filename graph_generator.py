@@ -34,6 +34,7 @@ def make_graph(nodes = 10 , graph_type = 'complete', base_edge_prob = 0.5):
     nx.set_node_attributes(G, False, name = 'Infection')
     nx.set_node_attributes(G,False, name = 'Days Infected')
     nx.set_node_attributes(G, 0, name = 'Vaccination')
+    nx.set_node_attributes(G, [], name = 'Infected by:')
     
     #Add edge attributes
     nx.set_edge_attributes(G, base_edge_prob, name = 'Probability')        
