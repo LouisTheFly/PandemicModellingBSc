@@ -18,20 +18,26 @@ import algorithm as alg
 
 ##########Setup#########
 
-time_steps = 200
-show = False
+time_steps = 9
+show = True
 log = False
-plot = True
+delay = True
+plot = False
 five_day_average = True
 
-nodes = 10000
+#Node Setup
+nodes = 10
 graph_type = 'WS'
 base_edge_prob = 0.05
+
 #nodes_to_infect = [0]
-amount_to_infect = 1
+amount_to_infect = 0
 #nodes_to_vaccinate = [5,7]
-amount_to_vaccinate = 4000
-base_vacc_loss = 0.1
+amount_to_vaccinate = 4
+
+#Vaccination Controls
+base_vacc_strength = 0.8
+base_vacc_loss = 0.5
 
 
 graph = gen.make_graph(nodes = nodes, graph_type = graph_type, base_edge_prob = base_edge_prob) # dataset = False
@@ -42,7 +48,7 @@ graph = alg.infect_random_nodes(graph, amount_to_infect)
 
 #Vaccinate nodes
 #graph = alg.vaccinate_nodes(graph, nodes_to_vaccinate)
-graph = alg.vaccinate_random_nodes(graph, amount_to_vaccinate)
+graph = alg.vaccinate_random_nodes(graph, amount_to_vaccinate, base_vacc_strength)
 
 #Drawing
 if show == True:
@@ -50,7 +56,7 @@ if show == True:
 
 ########Iterating########
 
-graph,infectedlist,infectionsperday=alg.run_graph(graph, time_steps, show = show, log = log, delay = False, base_vacc_loss = base_vacc_loss)
+graph,infectedlist,infectionsperday=alg.run_graph(graph, time_steps, show = show, log = log, delay = delay, base_vacc_loss = base_vacc_loss)
 
 ########Graphing########
 if plot == True:

@@ -144,15 +144,15 @@ def cure_nodes(G, nodes_to_cure):
     return G
 
 #Vaccinate specified nodes
-def vaccinate_nodes(G, nodes_to_vaccinate):
-    nodes = dict.fromkeys(nodes_to_vaccinate, 0.7)
+def vaccinate_nodes(G, nodes_to_vaccinate, base_vacc_strength = 0.7):
+    nodes = dict.fromkeys(nodes_to_vaccinate, base_vacc_strength)
     nx.set_node_attributes(G, nodes, name = 'Vaccination')
     return G
 
-def vaccinate_random_nodes(G, amount_to_vaccinate):
+def vaccinate_random_nodes(G, amount_to_vaccinate, base_vacc_strength = 0.7):
     healthy_nodes = find_healthy_nodes(G)
     nodes_to_vaccinate = np.random.choice(healthy_nodes, size = amount_to_vaccinate, replace = False)
-    nodes = dict.fromkeys(nodes_to_vaccinate, 0.7)
+    nodes = dict.fromkeys(nodes_to_vaccinate, base_vacc_strength)
     nx.set_node_attributes(G, nodes, name = 'Vaccination')
     return G
 
