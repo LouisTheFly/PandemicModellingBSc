@@ -18,7 +18,7 @@ from tqdm import tqdm
 #%%
 
 #Main Graph Time Iterator 
-def run_graph(G, time_steps = 20, show = False, log = False, delay = False):
+def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base_vacc_loss = 0.1):
     
     #Finds any infected nodes in the graph
     infected_nodes_list = [] #Contains a list of node keys infected at any point
@@ -30,13 +30,13 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False):
     daily_infections_list = []
     
     #Calculate total node count
-    totalnodes=len(G)
+    total_nodes = len(G)
     
     #finding days infected plus recovery period etc
     #starts with the initially infected nodes
-
     listofnodes=np.array(infected_nodes_list)
     daysinfected=np.array([1]*len(listofnodes))
+    
     #Each time_step
     for i in tqdm(range(time_steps)):
         
@@ -72,6 +72,14 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False):
         #Update overall infected list and remove duplicate nodes
         infected_nodes_list += infections_within_day
         infected_nodes_list = [*set(infected_nodes_list)]
+        
+        #Decrement vaccination value by a certain amount, if negative set to 0
+        vacc_subG = nx.subgraph(G, find_vaccinated_nodes(G)) #Make subgraph of only nodes with some ammount of vaccination
+        vacc_subG_dict = nx.get_node_attributes(vacc_subG, 'Vaccination') #Get their vaccination status in a dict
+        [vacc_subG_dict.update({k: max(v-base_vacc_loss, 0)}) for k, v in vacc_subG_dict.items()] #Update the value in that dict
+        nx.set_node_attributes(G, vacc_subG_dict, name = 'Vaccination') #Set that new value back into G
+        
+        
         #Find how many new nodes are infected and update lists and counters
         #new_inf_count = len(infected_nodes_list) - infected_nodes_count
         new_inf_count = len(infections_within_day)
@@ -80,18 +88,19 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False):
         #if infected_nodes_count >= len(G)-3:
             #print('Nodes to be infected: ',nodes_to_infect)
             #sys.exit('Vaccinated node was infected')
-        daysinfected=daysinfected+1
-        listofnodes=np.append(listofnodes,infections_within_day)
-        daysinfected=np.append(daysinfected,[1]*len(infections_within_day))
-        while np.max(daysinfected)>=5:
-            curednodes=np.where(np.array(daysinfected)==5)[0]
-            cure_nodes(G,curednodes)
-            infected_nodes_array=np.array(infected_nodes_list)
-            infected_nodes_list=(np.delete(infected_nodes_array,curednodes)).tolist()
-            #deleting the cured nodes from the infected list
-            listofnodes=np.delete(listofnodes,curednodes)
-            daysinfected=np.delete(daysinfected,curednodes)
-                #For visualising the graph
+        #daysinfected=daysinfected+1
+        #listofnodes=np.append(listofnodes,infections_within_day)
+        #daysinfected=np.append(daysinfected,[1]*len(infections_within_day))
+        #while np.max(daysinfected)>=5:
+        #    curednodes=np.where(np.array(daysinfected)==5)[0]
+        #    cure_nodes(G,curednodes)
+        #    infected_nodes_array=np.array(infected_nodes_list)
+        #    infected_nodes_list=(np.delete(infected_nodes_array,curednodes)).tolist()
+        #    #deleting the cured nodes from the infected list
+        #    listofnodes=np.delete(listofnodes,curednodes)
+        #    daysinfected=np.delete(daysinfected,curednodes)
+        
+        #For visualising the graph
         if show == True:
             gen.draw_graph(G)
             plt.show()
