@@ -18,16 +18,16 @@ from tqdm import tqdm
 #%%
 
 #Main Graph Time Iterator 
-def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base_vacc_loss = 0.1):
+def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base_infection_decay = 1, base_vacc_loss = 0.1):
     
     #Finds any infected nodes in the graph
     infected_nodes_list = [] #Contains a list of node keys infected at any point
-    infected_nodes_list += find_infected_nodes(G)
+    infected_nodes_list += find_infected_nodes(G) #Easier to read but not neccesary as 2 lines
     infected_nodes_count = len(infected_nodes_list) #Number of nodes infected at any point
-    
     
     #Place to store count of each day's new infections
     daily_infections_list = []
+    infected_nodes_count_list = []
     
     #Calculate total node count
     #total_nodes = nx.number_of_nodes(G)
@@ -37,6 +37,7 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
         
         #Place to store the new nodes infected that day
         infections_within_day = []
+        infected_nodes_list = find_infected_nodes(G)
         
         #Run through each infected node
         for j in infected_nodes_list:
@@ -68,6 +69,15 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
         infected_nodes_list += infections_within_day
         infected_nodes_list = [*set(infected_nodes_list)]
         
+        #Find how many new nodes are infected and update lists and counters
+        new_infected_nodes_count = len(infected_nodes_list)
+        inf_count_difference = new_infected_nodes_count - infected_nodes_count
+        daily_infections_list.append(inf_count_difference)
+        infected_nodes_count_list.append(new_infected_nodes_count)
+                
+        #Update count
+        infected_nodes_count = new_infected_nodes_count
+        
         #Decrement vaccination value by a certain amount, if negative set to 0
         vacc_subG = nx.subgraph(G, find_vaccinated_nodes(G)) #Make subgraph of only nodes with some ammount of vaccination
         if nx.number_of_nodes(vacc_subG) > 0:
@@ -75,13 +85,12 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
             [vacc_subG_dict.update({k: max(v-base_vacc_loss, 0)}) for k, v in vacc_subG_dict.items()] #Update the value in that dict
             nx.set_node_attributes(G, vacc_subG_dict, name = 'Vaccination') #Set that new value back into G
         
-        
-        #Find how many new nodes are infected and update lists and counters
-        new_inf_count = len(infected_nodes_list) - infected_nodes_count
-        daily_infections_list.append(new_inf_count)
-        
-        #Update count
-        infected_nodes_count = len(infected_nodes_list)
+        #Decrement infection value by a certain amount, if negative set to 0
+        inf_subG = nx.subgraph(G, find_infected_nodes(G)) #Make subgraph of only nodes with some ammount of infection
+        if nx.number_of_nodes(inf_subG) > 0:
+            inf_subG_dict = nx.get_node_attributes(inf_subG, 'Infection') #Get their infection status in a dict
+            [inf_subG_dict.update({k: max(v-base_infection_decay, 0)}) for k, v in inf_subG_dict.items()] #Update the value in that dict
+            nx.set_node_attributes(G, inf_subG_dict, name = 'Infection') #Set that new value back into G
         
         
         #For visualising the graph
@@ -105,7 +114,7 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
     
     #print(nx.get_node_attributes(G, name = 'Infected by:'))
             
-    return G, infected_nodes_list, daily_infections_list
+    return G, infected_nodes_list, daily_infections_list, infected_nodes_count_list
 
 
 #Infects specified nodes
