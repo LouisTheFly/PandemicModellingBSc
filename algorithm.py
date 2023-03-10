@@ -109,21 +109,18 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
 
 
 #Infects specified nodes
-def infect_nodes(G, nodes_to_infect):
-    nodes = dict.fromkeys(nodes_to_infect, 80)
+def infect_nodes(G, nodes_to_infect, base_infection_strength = 80):
+    nodes = dict.fromkeys(nodes_to_infect, base_infection_strength)
     nx.set_node_attributes(G, nodes, name = 'Infection')    
     return G
 
-def infect_random_nodes(G, amount_to_infect):
+def infect_random_nodes(G, amount_to_infect, base_infection_strength = 80):
     healthy_nodes = find_healthy_nodes(G)
     nodes_to_infect = np.random.choice(healthy_nodes, size = amount_to_infect, replace = False)
-    nodes = dict.fromkeys(nodes_to_infect, 80)
+    nodes = dict.fromkeys(nodes_to_infect, base_infection_strength)
     nx.set_node_attributes(G, nodes, name = 'Infection')
     return G
 
-'''
-iadd another function adding a vaccination stance as well, i.e infective for 5 days but still 
-'''
 #Cures specified nodes
 def cure_nodes(G, nodes_to_cure):
     nodes = dict.fromkeys(nodes_to_cure, False)
