@@ -34,9 +34,7 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False):
     
     #finding days infected plus recovery period etc
     #starts with the initially infected nodes
-
-    listofnodes=np.array(infected_nodes_list)
-    daysinfected=np.array([1]*len(listofnodes))
+    daysinfected=np.array([1]*len(infected_nodes_list))
     #Each time_step
     for i in tqdm(range(time_steps)):
         
@@ -72,25 +70,30 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False):
         #Update overall infected list and remove duplicate nodes
         infected_nodes_list += infections_within_day
         infected_nodes_list = [*set(infected_nodes_list)]
-        
+        print('infwithday',infections_within_day)
         #Find how many new nodes are infected and update lists and counters
         #new_inf_count = len(infected_nodes_list) - infected_nodes_count
         new_inf_count = len(infections_within_day)
         infected_nodes_count = len(infected_nodes_list)
         daily_infections_list.append(new_inf_count)
         
-        
         daysinfected=daysinfected+1
-        listofnodes=np.append(listofnodes,infections_within_day)
         daysinfected=np.append(daysinfected,[1]*len(infections_within_day))
         while np.max(daysinfected)>=5:
-            curednodes=np.where(np.array(daysinfected)==5)[0]
+            curednodes=[]
+            locationcure=[]
+            locationcure=np.where(np.array(daysinfected)==5)[0]
+            print('days',daysinfected)
+            print('loc',locationcure)
+            print('inf',infected_nodes_list)
+            curednodes=list(np.array(infected_nodes_list)[locationcure])
+            print('cure',curednodes)
             cure_nodes(G,curednodes)
-            infected_nodes_array=np.array(infected_nodes_list)
-            infected_nodes_list=(np.delete(infected_nodes_array,curednodes)).tolist()
+            infected_nodes_list=list(filter(lambda x: x not in curednodes, infected_nodes_list))
+            print('inf1',infected_nodes_list)
             #deleting the cured nodes from the infected list
-            listofnodes=np.delete(listofnodes,curednodes)
-            daysinfected=np.delete(daysinfected,curednodes)
+            daysinfected=np.delete(daysinfected,locationcure)
+            print(daysinfected)
                 #For visualising the graph
         if show == True:
             gen.draw_graph(G)

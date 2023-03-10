@@ -18,7 +18,7 @@ import algorithm as alg
 
 ##########Setup#########
 
-time_steps = 80
+time_steps = 10
 show = True
 log = False
 plot = True
@@ -54,3 +54,15 @@ graph,infectedlist,infectionsperday=alg.run_graph(graph, time_steps, show = show
 ########Graphing########
 if plot == True:
     alg.plotting(np.arange(time_steps),infectionsperday, 'bar', 'Infections per Day', 'Time (in days)', 'Number of Infections', five_day_average = five_day_average)
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
