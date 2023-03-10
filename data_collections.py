@@ -19,15 +19,15 @@ import algorithm2 as alg
 ##########Setup#########
 
 
-time_steps = 10
+time_steps = 100
 
-show = True
+show = False
 log = False
-delay = True
-plot = False
+delay = False
+plot = True
 five_day_average = True
 
-nodes = 20
+nodes = 1000
 graph_type = 'cycle'
 base_edge_prob = 1
 #nodes_to_infect = [0]
@@ -38,11 +38,6 @@ amount_to_vaccinate = 0
 #nodes = 10
 #graph_type = 'WS'
 #base_edge_prob = 0.05
-
-#nodes_to_infect = [0]
-amount_to_infect = 1
-#nodes_to_vaccinate = [5,7]
-amount_to_vaccinate = 0
 
 #Vaccination Controls
 base_vacc_strength = 0.8

@@ -72,13 +72,8 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
                     
         #Update overall infected list and remove duplicate nodes
         infections_within_day=list(filter(lambda x: x not in infected_nodes_list,infections_within_day))
-        print('1',infected_nodes_list)
         infected_nodes_list += infections_within_day
-        print('2',infected_nodes_list)
         #infected_nodes_list = [*set(infected_nodes_list)]
-        print('3',infected_nodes_list)
-     
-        
         #Decrement vaccination value by a certain amount, if negative set to 0
         vacc_subG = nx.subgraph(G, find_vaccinated_nodes(G)) #Make subgraph of only nodes with some ammount of vaccination
         vacc_subG_dict = nx.get_node_attributes(vacc_subG, 'Vaccination') #Get their vaccination status in a dict
@@ -92,40 +87,20 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
         daily_infections_list.append(new_inf_count)
 
         
-        daysinfected=daysinfected+1
-        daysinfected=np.append(daysinfected,[1]*len(infections_within_day))
-        while np.max(daysinfected)>=5:
-            curednodes=[]
-            locationcure=[]
-            locationcure=np.where(np.array(daysinfected)==5)[0]
-            print('lendays',len(daysinfected))
-            print(len(infected_nodes_list))
-            print('loc',locationcure)
-            print('inf',len(infected_nodes_list))
-            curednodes=list(np.array(infected_nodes_list)[locationcure])
-            print('cure',curednodes)
-            cure_nodes(G,curednodes)
-            infected_nodes_list=list(filter(lambda x: x not in curednodes, infected_nodes_list))
-            print('inf1',infected_nodes_list)
-            #deleting the cured nodes from the infected list
-            daysinfected=np.delete(daysinfected,locationcure)
-            print(daysinfected)
                 #For visualising the graph
 
         #if infected_nodes_count >= len(G)-3:
-            #print('Nodes to be infected: ',nodes_to_infect)
-            #sys.exit('Vaccinated node was infected')
-        #daysinfected=daysinfected+1
-        #listofnodes=np.append(listofnodes,infections_within_day)
-        #daysinfected=np.append(daysinfected,[1]*len(infections_within_day))
-        #while np.max(daysinfected)>=5:
-        #    curednodes=np.where(np.array(daysinfected)==5)[0]
-        #    cure_nodes(G,curednodes)
-        #    infected_nodes_array=np.array(infected_nodes_list)
-        #    infected_nodes_list=(np.delete(infected_nodes_array,curednodes)).tolist()
-        #    #deleting the cured nodes from the infected list
-        #    listofnodes=np.delete(listofnodes,curednodes)
-        #    daysinfected=np.delete(daysinfected,curednodes)
+         #   print('Nodes to be infected: ',nodes_to_infect)
+           # sys.exit('Vaccinated node was infected')
+        daysinfected=daysinfected+1
+        daysinfected=np.append(daysinfected,[1]*len(infections_within_day))
+        while np.max(daysinfected)>=5:
+            curednodes=np.where(np.array(daysinfected)==5)[0]
+            cure_nodes(G,curednodes)
+            infected_nodes_array=np.array(infected_nodes_list)
+            infected_nodes_list=(np.delete(infected_nodes_array,curednodes)).tolist()
+            #deleting the cured nodes from the infected list
+            daysinfected=np.delete(daysinfected,curednodes)
         
         #For visualising the graph
 
@@ -171,7 +146,6 @@ iadd another function adding a vaccination stance as well, i.e infective for 5 d
 #Cures specified nodes
 def cure_nodes(G, nodes_to_cure):
     nodes = dict.fromkeys(nodes_to_cure, False)
-    print('nodes',nodes)
     nx.set_node_attributes(G, nodes, name = 'Infection')    
     return G
 
