@@ -18,7 +18,7 @@ import algorithm as alg
 
 ##########Setup#########
 
-time_steps = 9
+time_steps = 10
 show = True
 log = False
 delay = True

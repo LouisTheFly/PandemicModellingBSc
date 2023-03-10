@@ -75,9 +75,10 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
         
         #Decrement vaccination value by a certain amount, if negative set to 0
         vacc_subG = nx.subgraph(G, find_vaccinated_nodes(G)) #Make subgraph of only nodes with some ammount of vaccination
-        vacc_subG_dict = nx.get_node_attributes(vacc_subG, 'Vaccination') #Get their vaccination status in a dict
-        [vacc_subG_dict.update({k: max(v-base_vacc_loss, 0)}) for k, v in vacc_subG_dict.items()] #Update the value in that dict
-        nx.set_node_attributes(G, vacc_subG_dict, name = 'Vaccination') #Set that new value back into G
+        if nx.number_of_nodes(vacc_subG) > 0:
+            vacc_subG_dict = nx.get_node_attributes(vacc_subG, 'Vaccination') #Get their vaccination status in a dict
+            [vacc_subG_dict.update({k: max(v-base_vacc_loss, 0)}) for k, v in vacc_subG_dict.items()] #Update the value in that dict
+            nx.set_node_attributes(G, vacc_subG_dict, name = 'Vaccination') #Set that new value back into G
         
         
         #Find how many new nodes are infected and update lists and counters
@@ -213,6 +214,15 @@ def calculate_infections(G, subG, centre):
     nx.set_node_attributes(G, infected_by_dict, name = 'Infected by:')
 
     return infected_nodes
+
+#Edge Filter Func (For finding healthy nodes)
+def healthy_edge_filter(n1,n2):
+    return n1 == centre or n2 == centre
+
+#Edge Filter Func (For finding healthy nodes)
+def healthy_node_filter(n):
+    return graph[n]
+
 
 #%% Utility
 def remove_repeated(lst):
