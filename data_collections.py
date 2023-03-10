@@ -21,8 +21,6 @@ import algorithm as alg
 
 time_steps = 10
 
-time_steps = 9
-
 show = True
 log = False
 delay = True
@@ -37,14 +35,14 @@ amount_to_infect = 1
 #nodes_to_vaccinate = [5,7]
 amount_to_vaccinate = 0
 #Node Setup
-nodes = 10
-graph_type = 'WS'
-base_edge_prob = 0.05
+#nodes = 10
+#graph_type = 'WS'
+#base_edge_prob = 0.05
 
 #nodes_to_infect = [0]
-amount_to_infect = 0
+amount_to_infect = 1
 #nodes_to_vaccinate = [5,7]
-amount_to_vaccinate = 4
+amount_to_vaccinate = 0
 
 #Vaccination Controls
 base_vacc_strength = 0.8
