@@ -110,14 +110,14 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
 
 #Infects specified nodes
 def infect_nodes(G, nodes_to_infect):
-    nodes = dict.fromkeys(nodes_to_infect, True)
+    nodes = dict.fromkeys(nodes_to_infect, 80)
     nx.set_node_attributes(G, nodes, name = 'Infection')    
     return G
 
 def infect_random_nodes(G, amount_to_infect):
     healthy_nodes = find_healthy_nodes(G)
     nodes_to_infect = np.random.choice(healthy_nodes, size = amount_to_infect, replace = False)
-    nodes = dict.fromkeys(nodes_to_infect, True)
+    nodes = dict.fromkeys(nodes_to_infect, 80)
     nx.set_node_attributes(G, nodes, name = 'Infection')
     return G
 
@@ -145,7 +145,7 @@ def vaccinate_random_nodes(G, amount_to_vaccinate, base_vacc_strength = 0.7):
 
 #Finds any nodes currently infected in a graph
 def find_infected_nodes(G):
-    nodes = list({k:v for (k,v) in nx.get_node_attributes(G, 'Infection').items() if v==True})
+    nodes = list({k:v for (k,v) in nx.get_node_attributes(G, 'Infection').items() if v!=0})
     return nodes
 
 #Finds any nodes currently vaccinated in a graph
@@ -155,7 +155,7 @@ def find_vaccinated_nodes(G):
 
 #Finds any nodes currently healthy in a graph
 def find_healthy_nodes(G):
-    nodes = list({k:v for (k,v) in nx.get_node_attributes(G, 'Infection').items() if v==False})
+    nodes = list({k:v for (k,v) in nx.get_node_attributes(G, 'Infection').items() if v==0})
     return nodes
 
 #For given nodes and edges, returns which have been infected

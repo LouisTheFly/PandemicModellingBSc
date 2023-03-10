@@ -31,8 +31,7 @@ def make_graph(nodes = 10 , graph_type = 'complete', base_edge_prob = 0.5):
         G = nx.complete_graph(nodes)
     
     #Add node attributes
-    nx.set_node_attributes(G, False, name = 'Infection')
-    nx.set_node_attributes(G,False, name = 'Days Infected')
+    nx.set_node_attributes(G, 0, name = 'Infection')
     nx.set_node_attributes(G, 0, name = 'Vaccination')
     nx.set_node_attributes(G, [], name = 'Infected by:')
     
@@ -51,7 +50,7 @@ def draw_graph(G, draw_type = 'circular'):
         pos = nx.circular_layout(G)
     
     #Find infected nodes to colour red
-    infected_nodes = list({k:v for (k,v) in nx.get_node_attributes(G, 'Infection').items() if v==1})
+    infected_nodes = list({k:v for (k,v) in nx.get_node_attributes(G, 'Infection').items() if v!=0})
     
     #Find vaccinated nodes to colour green
     vaccinated_nodes = list({k:v for (k,v) in nx.get_node_attributes(G, 'Vaccination').items() if v!=0})

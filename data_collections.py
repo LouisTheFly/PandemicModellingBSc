@@ -18,26 +18,26 @@ import algorithm as alg
 
 ##########Setup#########
 
-time_steps = 10
+time_steps = 200
 show = True
 log = False
-delay = True
+delay = False
 plot = False
 five_day_average = True
 
 #Node Setup
-nodes = 10
+nodes = 10000
 graph_type = 'WS'
 base_edge_prob = 0.05
 
 #nodes_to_infect = [0]
-amount_to_infect = 0
+amount_to_infect = 1
 #nodes_to_vaccinate = [5,7]
-amount_to_vaccinate = 4
+amount_to_vaccinate = 0
 
 #Vaccination Controls
 base_vacc_strength = 0.8
-base_vacc_loss = 0.5
+base_vacc_loss = 0.05
 
 
 graph = gen.make_graph(nodes = nodes, graph_type = graph_type, base_edge_prob = base_edge_prob) # dataset = False
