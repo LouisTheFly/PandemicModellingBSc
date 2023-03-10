@@ -36,7 +36,7 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
     #finding days infected plus recovery period etc
     #starts with the initially infected nodes
 
-    daysinfected=np.array([1]*len(infected_nodes_list))
+    daysinfected=np.array([0]*len(infected_nodes_list))
     
     #Each time_step
     for i in tqdm(range(time_steps)):
@@ -92,15 +92,23 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
          #   print('Nodes to be infected: ',nodes_to_infect)
            # sys.exit('Vaccinated node was infected')
         daysinfected=daysinfected+1
-        daysinfected=np.append(daysinfected,[1]*len(infections_within_day))
-        while np.max(daysinfected)>=5:
-            curednodes=np.where(np.array(daysinfected)==5)[0]
+        daysinfected=np.append(daysinfected,[0]*len(infections_within_day))
+        if np.max(daysinfected)>=5:
+            print(len(infected_nodes_list))
+            print(len(daysinfected))
+            print(infected_nodes_list)
+            print(daysinfected)
+            locationcure=[]
+            locationcure=np.where(np.array(daysinfected)==5)[0]
+            curednodes=list(np.array(infected_nodes_list)[locationcure])
+            #curednodesloc=np.where(np.array(daysinfected)==5)[0]
+            print(curednodes)
             cure_nodes(G,curednodes)
-            infected_nodes_array=np.array(infected_nodes_list)
-            infected_nodes_list=(np.delete(infected_nodes_array,curednodes)).tolist()
+            infected_nodes_list=list(filter(lambda x: x not in curednodes, infected_nodes_list))
+            print(infected_nodes_list)
             #deleting the cured nodes from the infected list
-            daysinfected=np.delete(daysinfected,curednodes)
-        
+            daysinfected=np.delete(daysinfected,locationcure)
+            print(daysinfected)
         #For visualising the graph
 
         if show == True:

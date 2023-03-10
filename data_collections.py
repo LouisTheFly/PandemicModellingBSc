@@ -19,19 +19,19 @@ import algorithm2 as alg
 ##########Setup#########
 
 
-time_steps = 100
+time_steps = 10
 
-show = False
+show = True
 log = False
-delay = False
-plot = True
+delay = True
+plot = False
 five_day_average = True
 
-nodes = 1000
-graph_type = 'ws'
-base_edge_prob = 0.5
-#nodes_to_infect = [0]
-amount_to_infect = 5
+nodes = 20
+graph_type = 'WS'
+base_edge_prob = 1
+nodes_to_infect = [0]
+#amount_to_infect = 1
 #nodes_to_vaccinate = [5,7]
 amount_to_vaccinate = 0
 #Node Setup
@@ -47,8 +47,8 @@ base_vacc_loss = 0.5
 graph = gen.make_graph(nodes = nodes, graph_type = graph_type, base_edge_prob = base_edge_prob) # dataset = False
 
 #Infect nodes
-#graph = alg.infect_nodes(graph, nodes_to_infect)
-graph = alg.infect_random_nodes(graph, amount_to_infect)
+graph = alg.infect_nodes(graph, nodes_to_infect)
+#graph = alg.infect_random_nodes(graph, amount_to_infect)
 
 #Vaccinate nodes
 #graph = alg.vaccinate_nodes(graph, nodes_to_vaccinate)
