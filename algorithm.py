@@ -32,11 +32,6 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
     #Calculate total node count
     #total_nodes = nx.number_of_nodes(G)
     
-    #finding days infected plus recovery period etc
-    #starts with the initially infected nodes
-    listofnodes=np.array(infected_nodes_list)
-    daysinfected=np.array([1]*len(listofnodes))
-    
     #Each time_step
     for i in tqdm(range(time_steps)):
         
@@ -82,24 +77,12 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
         
         
         #Find how many new nodes are infected and update lists and counters
-        #new_inf_count = len(infected_nodes_list) - infected_nodes_count
-        new_inf_count = len(infections_within_day)
-        infected_nodes_count = len(infected_nodes_list)
+        new_inf_count = len(infected_nodes_list) - infected_nodes_count
         daily_infections_list.append(new_inf_count)
-        #if infected_nodes_count >= len(G)-3:
-            #print('Nodes to be infected: ',nodes_to_infect)
-            #sys.exit('Vaccinated node was infected')
-        #daysinfected=daysinfected+1
-        #listofnodes=np.append(listofnodes,infections_within_day)
-        #daysinfected=np.append(daysinfected,[1]*len(infections_within_day))
-        #while np.max(daysinfected)>=5:
-        #    curednodes=np.where(np.array(daysinfected)==5)[0]
-        #    cure_nodes(G,curednodes)
-        #    infected_nodes_array=np.array(infected_nodes_list)
-        #    infected_nodes_list=(np.delete(infected_nodes_array,curednodes)).tolist()
-        #    #deleting the cured nodes from the infected list
-        #    listofnodes=np.delete(listofnodes,curednodes)
-        #    daysinfected=np.delete(daysinfected,curednodes)
+        
+        #Update count
+        infected_nodes_count = len(infected_nodes_list)
+        
         
         #For visualising the graph
         if show == True:
@@ -120,7 +103,7 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
     if log == True:
         print('Infections to date...',sum(daily_infections_list))
     
-    print(nx.get_node_attributes(G, name = 'Infected by:'))
+    #print(nx.get_node_attributes(G, name = 'Infected by:'))
             
     return G, infected_nodes_list, daily_infections_list
 
