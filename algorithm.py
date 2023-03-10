@@ -91,7 +91,7 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
         infected_nodes_count = len(infected_nodes_list)
         daily_infections_list.append(new_inf_count)
 
-        
+
         daysinfected=daysinfected+1
         daysinfected=np.append(daysinfected,[1]*len(infections_within_day))
         while np.max(daysinfected)>=5:

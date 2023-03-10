@@ -30,8 +30,8 @@ five_day_average = True
 nodes = 1000
 graph_type = 'ws'
 base_edge_prob = 0.5
-nodes_to_infect = [0,100,200,550,650,750,850]
-amount_to_infect = 4
+#nodes_to_infect = [0]
+amount_to_infect = 5
 #nodes_to_vaccinate = [5,7]
 amount_to_vaccinate = 0
 #Node Setup

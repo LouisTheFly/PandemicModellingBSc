@@ -43,7 +43,6 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
         
         #Place to store the new nodes infected that day
         infections_within_day = []
-        
         #Run through each infected node
         for j in infected_nodes_list:
             #Find adjacent to j
