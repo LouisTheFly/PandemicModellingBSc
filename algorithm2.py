@@ -121,7 +121,7 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
     if log == True:
         print('Infections to date...',sum(daily_infections_list))
     
-    print(nx.get_node_attributes(G, name = 'Infected by:'))
+    #print(nx.get_node_attributes(G, name = 'Infected by:'))
             
     return G, infected_nodes_list, daily_infections_list
 
