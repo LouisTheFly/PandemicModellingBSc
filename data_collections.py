@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 import copy
 import graph_generator as gen
-import algorithm as alg
+import algorithm2 as alg
 
 #%% Testing
 
