@@ -114,17 +114,7 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
         #if infected_nodes_count >= len(G)-3:
             #print('Nodes to be infected: ',nodes_to_infect)
             #sys.exit('Vaccinated node was infected')
-        #daysinfected=daysinfected+1
-        #listofnodes=np.append(listofnodes,infections_within_day)
-        #daysinfected=np.append(daysinfected,[1]*len(infections_within_day))
-        #while np.max(daysinfected)>=5:
-        #    curednodes=np.where(np.array(daysinfected)==5)[0]
-        #    cure_nodes(G,curednodes)
-        #    infected_nodes_array=np.array(infected_nodes_list)
-        #    infected_nodes_list=(np.delete(infected_nodes_array,curednodes)).tolist()
-        #    #deleting the cured nodes from the infected list
-        #    listofnodes=np.delete(listofnodes,curednodes)
-        #    daysinfected=np.delete(daysinfected,curednodes)
+    
         
         #For visualising the graph
 
