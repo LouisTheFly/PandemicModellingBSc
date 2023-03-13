@@ -1,9 +1,11 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu Feb  9 15:28:06 2023
+Created on Sat Mar 11 13:05:57 2023
 
-@author: Louis
+@author: Linus
 """
+
 
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -12,6 +14,7 @@ import numpy as np
 import pandas as pd
 import copy
 import graph_generator as gen
+import linus_graph_generator as lin
 import algorithm2 as alg
 
 #%% Testing

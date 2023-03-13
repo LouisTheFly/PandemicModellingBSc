@@ -85,7 +85,6 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
         infected_nodes_count = len(infected_nodes_list)
         daily_infections_list.append(new_inf_count)
 
-        
                 #For visualising the graph
 
         #if infected_nodes_count >= len(G)-3:
@@ -94,21 +93,19 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
         daysinfected=daysinfected+1
         daysinfected=np.append(daysinfected,[0]*len(infections_within_day))
         if np.max(daysinfected)>=5:
-            print(len(infected_nodes_list))
-            print(len(daysinfected))
-            print(infected_nodes_list)
-            print(daysinfected)
+            #this is stopping transmission
+            locationinf=[]
+            locationinf=np.where(np.array(daysinfected)==5)[0]
+            uninfectivenodes=list(np.array(infected_nodes_list)[locationinf])
+            infected_nodes_list=list(filter(lambda x: x not in uninfectivenodes, infected_nodes_list))
+             stoptransmission_nodes(G,locationinf)
+        if np.max(daysinfected)>=10:
+            #this is healing them
             locationcure=[]
-            locationcure=np.where(np.array(daysinfected)==5)[0]
-            curednodes=list(np.array(infected_nodes_list)[locationcure])
-            #curednodesloc=np.where(np.array(daysinfected)==5)[0]
-            print(curednodes)
-            cure_nodes(G,curednodes)
-            infected_nodes_list=list(filter(lambda x: x not in curednodes, infected_nodes_list))
-            print(infected_nodes_list)
-            #deleting the cured nodes from the infected list
+            locationcure=np.where(np.array(daysinfected)==10)[0]
+               #deleting the cured nodes from the infected list
             daysinfected=np.delete(daysinfected,locationcure)
-            print(daysinfected)
+            cure_nodes(G,locationcure)
         #For visualising the graph
 
         if show == True:
