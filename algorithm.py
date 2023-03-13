@@ -63,6 +63,7 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
                 else:
                     #Infect nodes and update overall list
                     infect_nodes(G, nodes_to_infect)
+                    vaccinate_nodes(G, nodes_to_infect, base_vacc_strength = 1)
                     infections_within_day += nodes_to_infect
                     
         #Update overall infected list and remove duplicate nodes

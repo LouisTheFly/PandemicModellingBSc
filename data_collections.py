@@ -41,7 +41,7 @@ base_infection_decay = 10 # Always make an integer, analagous to days infected
 
 #Vaccination Controls
 base_vacc_strength = 0.8
-base_vacc_loss = 0.05
+base_vacc_loss = 0.01
 
 
 graph = gen.make_graph(nodes = nodes, graph_type = graph_type, base_edge_prob = base_edge_prob) # dataset = False
