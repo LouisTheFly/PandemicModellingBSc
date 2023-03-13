@@ -21,7 +21,7 @@ import pstats
 
 ##########Setup#########
 
-time_steps = 10
+time_steps = 80
 show = False
 log = False
 delay = False
@@ -29,17 +29,17 @@ plot = True
 five_day_average = True
 
 #Node Setup
-nodes = 1000
+nodes = 100000
 graph_type = 'WS'
 base_edge_prob = 0.1
 
 #nodes_to_infect = [0]
 amount_to_infect = 10
 #nodes_to_vaccinate = [5,7]
-amount_to_vaccinate = 50
+amount_to_vaccinate = 0
 
 #Infection Controls
-base_infection_strength = 80 # Always make an integer, analagous to days infected
+base_infection_strength = 60 # Always make an integer, analagous to days infected
 base_infection_decay = 10 # Always make an integer, analagous to days infected
 
 #Vaccination Controls

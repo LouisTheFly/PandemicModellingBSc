@@ -44,6 +44,7 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
         
         #Place to store the new nodes infected that day
         infections_within_day = []
+        source_nodes_within_day = []
         infected_nodes_list = find_infected_nodes(G)
         
         #Decrement vaccination value by a certain amount, if negative set to 0
@@ -78,17 +79,47 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
             else:
 
                 #Return list of new nodes to infect
-                nodes_to_infect = calculate_infections(G, local_subG, j)
+                nodes_to_infect, source_nodes = calculate_infections(G, local_subG, j)
                 
                 #Check if any new nodes have actually been infected
                 if len(nodes_to_infect) == 0:
                     continue
                 else:
+                    #vacc_status = nx.get_node_attributes(subG, 'Vaccination')
+                    #vacc_status = OrderedDict(sorted(vacc_status.items()))
+                    #vacc_status_keys = list(vacc_status.keys())
+                    #vacc_status_vals = list(vacc_status.values())
                     
                     #Infect (Vaccinate) nodes and update overall list
-                    infect_nodes(G, nodes_to_infect)
-                    vaccinate_nodes(G, nodes_to_infect, base_vacc_strength = 1)
+                    #infect_nodes(G, nodes_to_infect)
+                    #vaccinate_nodes(G, nodes_to_infect, base_vacc_strength = 1)
+                    #print('nodes_to_infect', nodes_to_infect)
                     infections_within_day += nodes_to_infect
+                    source_nodes_within_day += source_nodes
+        
+        #Take collated possible infections and check vaccination doesnt prevent infection
+        #print('infections_within_day', infections_within_day)
+        #print('source_nodes_within_day', source_nodes_within_day)
+        if len(infections_within_day) != 0:
+            confirmed_infections = []
+            infections_subG = G.subgraph(infections_within_day)
+            vacc_status = nx.get_node_attributes(infections_subG, 'Vaccination')
+            #print('vacc_status', vacc_status)
+            vacc_status = OrderedDict(sorted(vacc_status.items()))
+            vacc_status_keys = np.array(list(vacc_status.keys()))
+            vacc_status_vals = np.array(list(vacc_status.values()))
+            #print('keys', vacc_status_keys)
+            #print('vals', vacc_status_vals)
+            for i in infections_within_day:
+                vacc_val = vacc_status_vals[np.where(vacc_status_keys == i)]
+                #print(vacc_val)
+                if np.random.random() >= vacc_val:
+                    confirmed_infections.append(i)
+            infections_within_day = confirmed_infections
+        
+        #Infect (Vaccinate) nodes and update overall list
+        infect_nodes(G, infections_within_day)
+        vaccinate_nodes(G, infections_within_day, base_vacc_strength = 1)
                     
         #Update overall infected list and remove duplicate nodes
         infected_nodes_list += infections_within_day
@@ -169,41 +200,44 @@ def find_healthy_nodes(G):
 def calculate_infections(G, subG, centre):
     #Create empty bin for nodes that get infected
     infected_nodes = []
+    source_nodes = []
     
     #Create and order dictionaries of edges and vaccination status
     edge_prob = nx.get_edge_attributes(subG, 'Probability')
     edge_prob = OrderedDict(sorted(edge_prob.items()))
 
-    vacc_status = nx.get_node_attributes(subG, 'Vaccination')
-    vacc_status = OrderedDict(sorted(vacc_status.items()))
+    #vacc_status = nx.get_node_attributes(subG, 'Vaccination')
+    #vacc_status = OrderedDict(sorted(vacc_status.items()))
     
     #Create lists of keys and related values
     edge_prob_keys = list(edge_prob.keys())
     edge_prob_vals = list(edge_prob.values())
-    vacc_status_keys = list(vacc_status.keys())
-    vacc_status_vals = list(vacc_status.values())
+    #vacc_status_keys = list(vacc_status.keys())
+    #vacc_status_vals = list(vacc_status.values())
 
     #Find the central node in the vaccination status and remove
-    vacc_centre_index = [i for i, value in enumerate(vacc_status_keys) if value == centre][0]
-    del vacc_status_keys[vacc_centre_index]
-    del vacc_status_vals[vacc_centre_index]
+    #vacc_centre_index = [i for i, value in enumerate(vacc_status_keys) if value == centre][0]
+    #del vacc_status_keys[vacc_centre_index]
+    #del vacc_status_vals[vacc_centre_index]
 
     #Iterate through vals checking if they exceed the rand values, then append to list
     for i in range(len(edge_prob)):
         if np.random.random() <= edge_prob_vals[i]:
             node_found = [x for x in edge_prob_keys[i] if x != centre][0]
-
+            infected_nodes.append(node_found)
+            source_nodes.append(centre)
+            
             #Check vaccination doesnt prevent infection
-            vacc_status_index = [i for i, value in enumerate(vacc_status_keys) if value == node_found][0]
-            if np.random.random() >= vacc_status_vals[vacc_status_index]:
-                infected_nodes.append(node_found)
+            #vacc_status_index = [i for i, value in enumerate(vacc_status_keys) if value == node_found][0]
+            #if np.random.random() >= vacc_status_vals[vacc_status_index]:
+                #infected_nodes.append(node_found)
     
     #Add label that the central node was the one that infected these
-    infected_by_dict = nx.get_node_attributes(nx.subgraph(subG, infected_nodes), 'Infected by:')
-    [infected_by_dict.update({k: centre}) for k, v in infected_by_dict.items()]
-    nx.set_node_attributes(G, infected_by_dict, name = 'Infected by:')
+    #infected_by_dict = nx.get_node_attributes(nx.subgraph(subG, infected_nodes), 'Infected by:')
+    #[infected_by_dict.update({k: centre}) for k, v in infected_by_dict.items()]
+    #nx.set_node_attributes(G, infected_by_dict, name = 'Infected by:')
 
-    return infected_nodes
+    return infected_nodes, source_nodes
 
 
 #%% Utility
