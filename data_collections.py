@@ -14,11 +14,14 @@ import copy
 import graph_generator as gen
 import algorithm as alg
 
+import cProfile
+import pstats
+
 #%% Testing
 
 ##########Setup#########
 
-time_steps = 300
+time_steps = 10
 show = False
 log = False
 delay = False
@@ -26,14 +29,14 @@ plot = True
 five_day_average = True
 
 #Node Setup
-nodes = 10000
+nodes = 1000
 graph_type = 'WS'
-base_edge_prob = 0.05
+base_edge_prob = 0.1
 
 #nodes_to_infect = [0]
 amount_to_infect = 10
 #nodes_to_vaccinate = [5,7]
-amount_to_vaccinate = 0
+amount_to_vaccinate = 50
 
 #Infection Controls
 base_infection_strength = 80 # Always make an integer, analagous to days infected
@@ -58,11 +61,21 @@ graph = alg.vaccinate_random_nodes(graph, amount_to_vaccinate, base_vacc_strengt
 if show == True:
     gen.draw_graph(graph, draw_type = 'circular')
 
+#%%
 ########Iterating########
 
 graph, infected_list, infections_per_day, infected_nodes_count_list = alg.run_graph(graph, time_steps, show = show, log = log, delay = delay, base_infection_decay = base_infection_decay, base_vacc_loss = base_vacc_loss)
+
 
 ########Graphing########
 if plot == True:
     alg.plotting(np.arange(time_steps),infections_per_day, 'bar', 'Infections per Day', 'Time (in days)', 'Change in Number of Infections', five_day_average = five_day_average)
     alg.plotting(np.arange(time_steps),infected_nodes_count_list, 'bar', 'Infected per Day', 'Time (in days)', 'Number of Infections', five_day_average = five_day_average)
+    
+    
+#%%   
+########Optimising########
+cProfile.run('alg.run_graph(graph, time_steps, show = show, log = log, delay = delay, base_infection_decay = base_infection_decay, base_vacc_loss = base_vacc_loss)', 'restats')
+#%%
+p = pstats.Stats('restats')
+p.strip_dirs().sort_stats('cumtime').print_stats()

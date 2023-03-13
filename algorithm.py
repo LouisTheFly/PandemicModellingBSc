@@ -5,6 +5,7 @@ Created on Tue Feb  7 11:39:14 2023
 
 @author: Linus
 """
+import time
 import pandas as pd
 import networkx as nx
 import numpy as np
@@ -35,12 +36,33 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
     #Each time_step
     for i in tqdm(range(time_steps)):
         
+        #For logging the graph data into the console
+        if log == True:
+            print('Iteration: ',i)
+            print('Number of Infected Nodes...', infected_nodes_count)
+            #print('IDs of Infected Nodes...', infected_nodes_list)
+        
         #Place to store the new nodes infected that day
         infections_within_day = []
         infected_nodes_list = find_infected_nodes(G)
         
+        #Decrement vaccination value by a certain amount, if negative set to 0
+        vacc_subG = nx.subgraph(G, find_vaccinated_nodes(G)) #Make subgraph of only nodes with some ammount of vaccination
+        if nx.number_of_nodes(vacc_subG) > 0:
+            vacc_subG_dict = nx.get_node_attributes(vacc_subG, 'Vaccination') #Get their vaccination status in a dict
+            [vacc_subG_dict.update({k: max(v-base_vacc_loss, 0)}) for k, v in vacc_subG_dict.items()] #Update the value in that dict
+            nx.set_node_attributes(G, vacc_subG_dict, name = 'Vaccination') #Set that new value back into G
+        
+        #Decrement infection value by a certain amount, if negative set to 0
+        inf_subG = nx.subgraph(G, infected_nodes_list) #Make subgraph of only nodes with some ammount of infection
+        if nx.number_of_nodes(inf_subG) > 0:
+            inf_subG_dict = nx.get_node_attributes(inf_subG, 'Infection') #Get their infection status in a dict
+            [inf_subG_dict.update({k: max(v-base_infection_decay, 0)}) for k, v in inf_subG_dict.items()] #Update the value in that dict
+            nx.set_node_attributes(G, inf_subG_dict, name = 'Infection') #Set that new value back into G
+
         #Run through each infected node
         for j in infected_nodes_list:
+
             #Find adjacent to j
             edges_adj = nx.edges(G,j)
             
@@ -54,6 +76,7 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
             if len(healthy_neighbors) == 0:
                 continue
             else:
+
                 #Return list of new nodes to infect
                 nodes_to_infect = calculate_infections(G, local_subG, j)
                 
@@ -61,7 +84,8 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
                 if len(nodes_to_infect) == 0:
                     continue
                 else:
-                    #Infect nodes and update overall list
+                    
+                    #Infect (Vaccinate) nodes and update overall list
                     infect_nodes(G, nodes_to_infect)
                     vaccinate_nodes(G, nodes_to_infect, base_vacc_strength = 1)
                     infections_within_day += nodes_to_infect
@@ -79,39 +103,15 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
         #Update count
         infected_nodes_count = new_infected_nodes_count
         
-        #Decrement vaccination value by a certain amount, if negative set to 0
-        vacc_subG = nx.subgraph(G, find_vaccinated_nodes(G)) #Make subgraph of only nodes with some ammount of vaccination
-        if nx.number_of_nodes(vacc_subG) > 0:
-            vacc_subG_dict = nx.get_node_attributes(vacc_subG, 'Vaccination') #Get their vaccination status in a dict
-            [vacc_subG_dict.update({k: max(v-base_vacc_loss, 0)}) for k, v in vacc_subG_dict.items()] #Update the value in that dict
-            nx.set_node_attributes(G, vacc_subG_dict, name = 'Vaccination') #Set that new value back into G
-        
-        #Decrement infection value by a certain amount, if negative set to 0
-        inf_subG = nx.subgraph(G, find_infected_nodes(G)) #Make subgraph of only nodes with some ammount of infection
-        if nx.number_of_nodes(inf_subG) > 0:
-            inf_subG_dict = nx.get_node_attributes(inf_subG, 'Infection') #Get their infection status in a dict
-            [inf_subG_dict.update({k: max(v-base_infection_decay, 0)}) for k, v in inf_subG_dict.items()] #Update the value in that dict
-            nx.set_node_attributes(G, inf_subG_dict, name = 'Infection') #Set that new value back into G
-        
-        
         #For visualising the graph
         if show == True:
             gen.draw_graph(G)
             plt.show()
             
-        #For logging the graph data into the console
-        if log == True:
-            print('Iteration: ',i)
-            print('Number of Infected Nodes...', infected_nodes_count)
-            print('IDs of Infected Nodes...', infected_nodes_list)
             
         #For adding delay
         if delay == True:
             sleep(1)  
-    
-    #For checking validity of spread
-    if log == True:
-        print('Infections to date...',sum(daily_infections_list))
     
     #print(nx.get_node_attributes(G, name = 'Infected by:'))
             
@@ -133,7 +133,7 @@ def infect_random_nodes(G, amount_to_infect, base_infection_strength = 80):
 
 #Cures specified nodes
 def cure_nodes(G, nodes_to_cure):
-    nodes = dict.fromkeys(nodes_to_cure, False)
+    nodes = dict.fromkeys(nodes_to_cure, 0)
     nx.set_node_attributes(G, nodes, name = 'Infection')    
     return G
 
@@ -205,18 +205,8 @@ def calculate_infections(G, subG, centre):
 
     return infected_nodes
 
-#Edge Filter Func (For finding healthy nodes)
-def healthy_edge_filter(n1,n2):
-    return n1 == centre or n2 == centre
-
-#Edge Filter Func (For finding healthy nodes)
-def healthy_node_filter(n):
-    return graph[n]
-
 
 #%% Utility
-def remove_repeated(lst):
-    return list(set(lst))
 
 def plotting(x,y, g_type = 'line', title = 'Default Title',x_label = 'Default X',y_label = 'Default Y', five_day_average = False):
     
