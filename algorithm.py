@@ -19,7 +19,7 @@ from tqdm import tqdm
 #%%
 
 #Main Graph Time Iterator 
-def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base_infection_decay = 1, base_vacc_loss = 0.1):
+def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base_infection_strength = 5, base_infection_decay = 1, base_vacc_loss = 0.1):
     
     #Finds any infected nodes in the graph
     infected_nodes_list = [] #Contains a list of node keys infected at any point
@@ -107,7 +107,7 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
         
         if len(infections_within_day) != 0:
             #Infect (Vaccinate) nodes and update overall list
-            infect_nodes(G, infections_within_day)
+            infect_nodes(G, infections_within_day, base_infection_strength)
             
             #Label source of infection attribute
             source_labels_dict = dict(zip(confirmed_infections, confirmed_sources))
@@ -144,14 +144,14 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
 
 
 #Infects specified nodes
-def infect_nodes(G, nodes_to_infect, base_infection_strength = 80, base_infection_vacc = 1):
+def infect_nodes(G, nodes_to_infect, base_infection_strength = 80, base_infection_vacc = 1.4):
     nodes = dict.fromkeys(nodes_to_infect, base_infection_strength)
     nx.set_node_attributes(G, nodes, name = 'Infection')
     nodes = dict.fromkeys(nodes_to_infect, base_infection_vacc)
     nx.set_node_attributes(G, nodes, name = 'Vaccination')    
     return G
 
-def infect_random_nodes(G, amount_to_infect, base_infection_strength = 80, base_infection_vacc = 1):
+def infect_random_nodes(G, amount_to_infect, base_infection_strength = 80, base_infection_vacc = 1.4):
     healthy_nodes = find_healthy_nodes(G)
     nodes_to_infect = np.random.choice(healthy_nodes, size = amount_to_infect, replace = False)
     nodes = dict.fromkeys(nodes_to_infect, base_infection_strength)
