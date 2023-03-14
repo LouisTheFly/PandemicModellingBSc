@@ -24,48 +24,53 @@ import pstats
 
 ###### Setup - Change These ############
 
-time_steps = 100
+time_steps = 200
 show = False
 log = False
 delay = False
 plot = True
 
 ###### Node Setup - Change These ############
-nodes = 1000
+nodes = 10000
 graph_type = 'WS'
 
-meeting_chance = 0.25
+meeting_chance = 0.4
 transmission_chance = 0.3
 
 
 ###### Scenario Controls - Change These #############
 #Infection Controls
-infectivity_period = 6
-immunity_period = 10
-infection_dose = 0.2
+infectivity_period = 10 #Days in which it can infect other nodes
+immunity_period = 20 #Days after infectivity period ends
+infection_dose = 2 #%
 
 #Vaccination Controls
-base_vacc_strength = 0.8
-base_vacc_loss = 0.01
-vaccination_dose = 0
+rate_vaccination_loss = 1 #% #Common to natural and forced immunity
+
+vaccination_effectiveness = 80 #% #Just for forced vaccination
+vaccination_dose = 0 #%
 
 ###### Derived Quantities - DO NOT CHANGE ###############
 base_infection_decay = 1 
-base_infection_strength = base_infection_decay*infectivity_period 
-base_edge_prob = meeting_chance*transmission_chance
+base_infection_strength = base_infection_decay * infectivity_period 
+base_edge_prob = meeting_chance * transmission_chance
+
+base_vacc_strength = vaccination_effectiveness/100
+base_vacc_loss = rate_vaccination_loss/100
+infection_immunity_strength = 1 + immunity_period * rate_vaccination_loss
 
 #nodes_to_infect = [0]
-amount_to_infect = int(round(infection_dose*nodes))
+amount_to_infect = int(round(infection_dose/100*nodes))
 #nodes_to_vaccinate = [5,7]
-amount_to_vaccinate = int(round(vaccination_dose*nodes))
+amount_to_vaccinate = int(round(vaccination_dose/100*nodes))
 
 #############################################################
 
 graph = gen.make_graph(nodes = nodes, graph_type = graph_type, base_edge_prob = base_edge_prob) # dataset = False
 
 #Infect nodes
-#graph = alg.infect_nodes(graph, nodes_to_infect, base_infection_strength)
-graph = alg.infect_random_nodes(graph, amount_to_infect, base_infection_strength)
+#graph = alg.infect_nodes(graph, nodes_to_infect, base_infection_strength, infection_immunity_strength)
+graph = alg.infect_random_nodes(graph, amount_to_infect, base_infection_strength, infection_immunity_strength)
 
 #Vaccinate nodes
 #graph = alg.vaccinate_nodes(graph, nodes_to_vaccinate, base_vacc_strength)

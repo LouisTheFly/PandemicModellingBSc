@@ -144,19 +144,19 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
 
 
 #Infects specified nodes
-def infect_nodes(G, nodes_to_infect, base_infection_strength = 80, base_infection_vacc = 1.1):
+def infect_nodes(G, nodes_to_infect, base_infection_strength = 5, infection_immunity_strength = 1.1):
     nodes = dict.fromkeys(nodes_to_infect, base_infection_strength)
     nx.set_node_attributes(G, nodes, name = 'Infection')
-    nodes = dict.fromkeys(nodes_to_infect, base_infection_vacc)
+    nodes = dict.fromkeys(nodes_to_infect, infection_immunity_strength)
     nx.set_node_attributes(G, nodes, name = 'Vaccination')    
     return G
 
-def infect_random_nodes(G, amount_to_infect, base_infection_strength = 80, base_infection_vacc = 1.1):
+def infect_random_nodes(G, amount_to_infect, base_infection_strength = 5, infection_immunity_strength = 1.1):
     healthy_nodes = find_healthy_nodes(G)
     nodes_to_infect = np.random.choice(healthy_nodes, size = amount_to_infect, replace = False)
     nodes = dict.fromkeys(nodes_to_infect, base_infection_strength)
     nx.set_node_attributes(G, nodes, name = 'Infection')
-    nodes = dict.fromkeys(nodes_to_infect, base_infection_vacc)
+    nodes = dict.fromkeys(nodes_to_infect, infection_immunity_strength)
     nx.set_node_attributes(G, nodes, name = 'Vaccination') 
     return G
 
