@@ -88,6 +88,7 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
         #Take collated possible infections and check vaccination doesnt prevent infection
         if len(infections_within_day) != 0:
             confirmed_infections = []
+            confirmed_sources = []
             infections_subG = G.subgraph(infections_within_day)
             
             #Find vaccination status
@@ -97,16 +98,21 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
             vacc_status_vals = np.array(list(vacc_status.values()))
 
             #Run probability
-            for i in infections_within_day:
-                vacc_val = vacc_status_vals[np.where(vacc_status_keys == i)]
+            for i in range(len(infections_within_day)):
+                vacc_val = vacc_status_vals[np.where(vacc_status_keys == infections_within_day[i])]
                 if np.random.random() >= vacc_val:
-                    confirmed_infections.append(i)
-            infections_within_day = confirmed_infections
+                    confirmed_infections.append(infections_within_day[i])
+                    confirmed_sources.append(source_nodes_within_day[i])
+            infections_within_day = confirmed_infections       
         
-        #Infect (Vaccinate) nodes and update overall list
-        infect_nodes(G, infections_within_day)
-        vaccinate_nodes(G, infections_within_day, base_vacc_strength = 1)
-                    
+        if len(infections_within_day) != 0:
+            #Infect (Vaccinate) nodes and update overall list
+            infect_nodes(G, infections_within_day)
+            
+            #Label source of infection attribute
+            source_labels_dict = dict(zip(confirmed_infections, confirmed_sources))
+            nx.set_node_attributes(G, source_labels_dict, name = 'Infected by:')   
+            
         #Update overall infected list and remove duplicate nodes
         infected_nodes_list += infections_within_day
         infected_nodes_list = [*set(infected_nodes_list)]
@@ -130,22 +136,28 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
         if delay == True:
             sleep(1)  
     
-    #print(nx.get_node_attributes(G, name = 'Infected by:'))
+    #For creating an R value
+    R_sources = nx.get_node_attributes(G, 'Infected by:')
+    R_sources = list(R_sources.values())
             
-    return G, infected_nodes_list, daily_infections_list, infected_nodes_count_list
+    return G, infected_nodes_list, daily_infections_list, infected_nodes_count_list, R_sources
 
 
 #Infects specified nodes
-def infect_nodes(G, nodes_to_infect, base_infection_strength = 80):
+def infect_nodes(G, nodes_to_infect, base_infection_strength = 80, base_infection_vacc = 1):
     nodes = dict.fromkeys(nodes_to_infect, base_infection_strength)
-    nx.set_node_attributes(G, nodes, name = 'Infection')    
+    nx.set_node_attributes(G, nodes, name = 'Infection')
+    nodes = dict.fromkeys(nodes_to_infect, base_infection_vacc)
+    nx.set_node_attributes(G, nodes, name = 'Vaccination')    
     return G
 
-def infect_random_nodes(G, amount_to_infect, base_infection_strength = 80):
+def infect_random_nodes(G, amount_to_infect, base_infection_strength = 80, base_infection_vacc = 1):
     healthy_nodes = find_healthy_nodes(G)
     nodes_to_infect = np.random.choice(healthy_nodes, size = amount_to_infect, replace = False)
     nodes = dict.fromkeys(nodes_to_infect, base_infection_strength)
     nx.set_node_attributes(G, nodes, name = 'Infection')
+    nodes = dict.fromkeys(nodes_to_infect, base_infection_vacc)
+    nx.set_node_attributes(G, nodes, name = 'Vaccination') 
     return G
 
 #Cures specified nodes
