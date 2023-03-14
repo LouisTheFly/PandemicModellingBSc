@@ -29,12 +29,11 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
     #infective nodes
     infective_nodes_list = [] #Contains a list of node keys infected at any point
     infective_nodes_list += find_infective_nodes(G)
+    infective_nodes_count = len(infective_nodes_list)
     
-    #Place to store count of each day's new infections
+     #Place to store count of each day's new infections
     daily_infections_list = []
-    
-    #Calculate total node count
-    #total_nodes = nx.number_of_nodes(G)
+    infected_nodes_count_list = []
     
     #finding days infected plus recovery period etc
     #starts with the initially infected nodes
@@ -48,6 +47,7 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
         infections_within_day = []
         #Run through each infected node
         for j in infective_nodes_list:
+            print('this should be the node not index',infective_nodes_list[j])
             #Find adjacent to j
             edges_adj = nx.edges(G,j)
             
@@ -63,7 +63,7 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
             else:
                 #Return list of new nodes to infect
                 nodes_to_infect = calculate_infections(G, local_subG, j)
-                
+                source_node=np.array([j]*len(nodes_to_infect))
                 #Check if any new nodes have actually been infected
                 if len(nodes_to_infect) == 0:
                     continue
@@ -179,7 +179,7 @@ def find_infected_nodes(G):
     nodes = list({k:v for (k,v) in nx.get_node_attributes(G, 'Infection').items() if v==True})
     return nodes
 #finds infective nodes
-def find_infecive_nodes(G):
+def find_infective_nodes(G):
     nodes = list({k:v for (k,v) in nx.get_node_attributes(G, 'Infective').items() if v==True})
     return nodes
 
