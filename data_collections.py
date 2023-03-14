@@ -24,38 +24,40 @@ import pstats
 
 ###### Setup - Change These ############
 
-time_steps = 1000
+time_steps = 100
 show = False
 log = False
 delay = False
 plot = True
 
 ###### Node Setup - Change These ############
-nodes = 10000
+nodes = 1000
 graph_type = 'WS'
 
 meeting_chance = 0.25
 transmission_chance = 0.3
 
-#nodes_to_infect = [0]
-amount_to_infect = 1
-#nodes_to_vaccinate = [5,7]
-amount_to_vaccinate = 0
 
 ###### Scenario Controls - Change These #############
 #Infection Controls
-infectivity_period = 5
+infectivity_period = 6
 immunity_period = 10
+infection_dose = 0.2
 
 #Vaccination Controls
 base_vacc_strength = 0.8
 base_vacc_loss = 0.01
+vaccination_dose = 0
 
 ###### Derived Quantities - DO NOT CHANGE ###############
 base_infection_decay = 1 
 base_infection_strength = base_infection_decay*infectivity_period 
 base_edge_prob = meeting_chance*transmission_chance
 
+#nodes_to_infect = [0]
+amount_to_infect = int(round(infection_dose*nodes))
+#nodes_to_vaccinate = [5,7]
+amount_to_vaccinate = int(round(vaccination_dose*nodes))
 
 #############################################################
 
@@ -103,8 +105,8 @@ if plot == True:
         plt.title('Emp R = %s Stat R = %s'%(empirical_R_value, statistical_R_value))
     plt.show()
     
-#%%   
+  
 ########Optimising########
-cProfile.run('alg.run_graph(graph, time_steps, show = show, log = log, delay = delay, base_infection_decay = base_infection_decay, base_vacc_loss = base_vacc_loss)', 'restats')
-p = pstats.Stats('restats')
-p.strip_dirs().sort_stats('cumtime').print_stats()
+#cProfile.run('alg.run_graph(graph, time_steps, show = show, log = log, delay = delay, base_infection_decay = base_infection_decay, base_vacc_loss = base_vacc_loss)', 'restats')
+#p = pstats.Stats('restats')
+#p.strip_dirs().sort_stats('cumtime').print_stats()
