@@ -22,34 +22,42 @@ import pstats
 
 #%% Testing
 
-##########Setup#########
+###### Setup - Change These ############
 
-time_steps = 300
+time_steps = 1000
 show = False
 log = False
 delay = False
 plot = True
-five_day_average = True
 
-#Node Setup
-nodes = 1000
+###### Node Setup - Change These ############
+nodes = 10000
 graph_type = 'WS'
-base_edge_prob = 0.1
+
+meeting_chance = 0.25
+transmission_chance = 0.3
 
 #nodes_to_infect = [0]
 amount_to_infect = 1
 #nodes_to_vaccinate = [5,7]
 amount_to_vaccinate = 0
 
+###### Scenario Controls - Change These #############
 #Infection Controls
-base_infection_strength = 7 # Always make an integer, analagous to days infected
-base_infection_decay = 1 # Always make an integer, analagous to days infected
-infection_length = base_infection_strength/base_infection_decay
+infectivity_period = 5
+immunity_period = 10
 
 #Vaccination Controls
 base_vacc_strength = 0.8
 base_vacc_loss = 0.01
 
+###### Derived Quantities - DO NOT CHANGE ###############
+base_infection_decay = 1 
+base_infection_strength = base_infection_decay*infectivity_period 
+base_edge_prob = meeting_chance*transmission_chance
+
+
+#############################################################
 
 graph = gen.make_graph(nodes = nodes, graph_type = graph_type, base_edge_prob = base_edge_prob) # dataset = False
 
@@ -85,11 +93,11 @@ if plot == True:
     ##Statistical##
     degree_array = np.transpose(analfunc.degree_finder(graph))[1]
     avg_degree = np.mean(degree_array)
-    statistical_R_value = round(infection_length * base_edge_prob * avg_degree, 3)
+    statistical_R_value = round(infectivity_period * base_edge_prob * avg_degree, 3)
 
 ########Graphing########
-    alg.plotting(np.arange(time_steps),infections_per_day, 'bar', 'Infections per Day', 'Time (in days)', 'Change in Number of Infections', five_day_average = five_day_average)
-    alg.plotting(np.arange(time_steps),infected_nodes_count_list, 'bar', 'Infected per Day', 'Time (in days)', 'Number of Infections', five_day_average = five_day_average)
+    alg.plotting(np.arange(time_steps),infections_per_day, 'bar', 'Infections per Day', 'Time (in days)', 'Change in Number of Infections', five_day_average = True)
+    alg.plotting(np.arange(time_steps),infected_nodes_count_list, 'bar', 'Infected per Day', 'Time (in days)', 'Number of Infections', five_day_average = True)
     if len(infected_list) != 0:
         plt.hist(bin_means_corrected, np.linspace(0,max(bin_means_corrected), max(bin_means_corrected)+1), width = 0.9)
         plt.title('Emp R = %s Stat R = %s'%(empirical_R_value, statistical_R_value))
