@@ -22,10 +22,13 @@ from tqdm import tqdm
 def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base_vacc_loss = 0.1):
     
     #Finds any infected nodes in the graph
-    infected_nodes_list = [] #Contains a list of node keys infected at any point
-    infected_nodes_list += find_infected_nodes(G)
-    infected_nodes_count = len(infected_nodes_list) #Number of nodes infected at any point
+    positive_nodes_list = [] #Contains a list of node keys infected at any point
+    positive_nodes_list += find_infected_nodes(G)
+    positive_nodes_count = len(positive_nodes_list) #Number of nodes infected at any point
     
+    #infective nodes
+    infective_nodes_list = [] #Contains a list of node keys infected at any point
+    infective_nodes_list += find_infective_nodes(G)
     
     #Place to store count of each day's new infections
     daily_infections_list = []
@@ -36,7 +39,7 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
     #finding days infected plus recovery period etc
     #starts with the initially infected nodes
 
-    daysinfected=np.array([0]*len(infected_nodes_list))
+    daysinfected=np.array([0]*len(positive_nodes_list))
     
     #Each time_step
     for i in tqdm(range(time_steps)):
@@ -44,7 +47,7 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
         #Place to store the new nodes infected that day
         infections_within_day = []
         #Run through each infected node
-        for j in infected_nodes_list:
+        for j in infective_nodes_list:
             #Find adjacent to j
             edges_adj = nx.edges(G,j)
             
@@ -98,16 +101,16 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
             locationinf=np.where(np.array(daysinfected)==5)[0]
             uninfectivenodes=list(np.array(infected_nodes_list)[locationinf])
             infected_nodes_list=list(filter(lambda x: x not in uninfectivenodes, infected_nodes_list))
-             stoptransmission_nodes(G,locationinf)
+            stoptransmission_nodes(G,locationinf)
         if np.max(daysinfected)>=10:
             #this is healing them
             locationcure=[]
             locationcure=np.where(np.array(daysinfected)==10)[0]
-               #deleting the cured nodes from the infected list
+             #deleting the cured nodes from the infected list
             daysinfected=np.delete(daysinfected,locationcure)
             cure_nodes(G,locationcure)
+       
         #For visualising the graph
-
         if show == True:
             gen.draw_graph(G)
             plt.show()
@@ -153,6 +156,11 @@ def cure_nodes(G, nodes_to_cure):
     nx.set_node_attributes(G, nodes, name = 'Infection')    
     return G
 
+def stoptransmission_nodes(G, nodes_to_cure):
+    nodes = dict.fromkeys(nodes_to_cure, False)
+    nx.set_node_attributes(G, nodes, name = 'Infective')    
+    return G
+
 #Vaccinate specified nodes
 def vaccinate_nodes(G, nodes_to_vaccinate, base_vacc_strength = 0.7):
     nodes = dict.fromkeys(nodes_to_vaccinate, base_vacc_strength)
@@ -169,6 +177,10 @@ def vaccinate_random_nodes(G, amount_to_vaccinate, base_vacc_strength = 0.7):
 #Finds any nodes currently infected in a graph
 def find_infected_nodes(G):
     nodes = list({k:v for (k,v) in nx.get_node_attributes(G, 'Infection').items() if v==True})
+    return nodes
+#finds infective nodes
+def find_infecive_nodes(G):
+    nodes = list({k:v for (k,v) in nx.get_node_attributes(G, 'Infective').items() if v==True})
     return nodes
 
 #Finds any nodes currently vaccinated in a graph
