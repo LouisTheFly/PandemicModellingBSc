@@ -26,7 +26,7 @@ time_steps = 100
 
 show = False
 log = False
-delay = True
+delay = False
 plot = False
 five_day_average = True
 
@@ -47,7 +47,7 @@ base_vacc_strength = 1
 base_vacc_loss = 0
 
 
-graph = gen.make_graph(nodes = nodes, graph_type = graph_type, base_edge_prob = base_edge_prob) # dataset = False
+graph = lin.make_graph(nodes = nodes, graph_type = graph_type, base_edge_prob = base_edge_prob) # dataset = False
 
 #Infect nodes
 # = alg.infect_nodes(graph, nodes_to_infect)

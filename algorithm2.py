@@ -30,7 +30,7 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
     infective_nodes_list = [] #Contains a list of node keys infected at any point
     infective_nodes_list += find_infective_nodes(G)
     infective_nodes_count = len(infective_nodes_list)
-    
+    print( infective_nodes_count )
      #Place to store count of each day's new infections
     daily_infections_list = []
     infected_nodes_count_list = []
@@ -39,43 +39,44 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
     #starts with the initially infected nodes
 
     daysinfected=np.array([0]*len(positive_nodes_list))
-    
+    #so days infected start at 0
     #Each time_step
     for i in tqdm(range(time_steps)):
         
+        daysinfected=daysinfected+1
         #Place to store the new nodes infected that day
         infections_within_day = []
-        #Run through each infected node
+        source_nodes_within_day = []
+        #Run through each infective node
         for j in infective_nodes_list:
-            print('this should be the node not index',infective_nodes_list[j])
+            
             #Find adjacent to j
             edges_adj = nx.edges(G,j)
-            
             #Make subgraph of these
             local_subG = G.edge_subgraph(edges_adj)
-            
             #Find the healthy ones
             healthy_neighbors = find_healthy_nodes(local_subG)
-            
             #Check if there are any possible nodes to infect
             if len(healthy_neighbors) == 0:
                 continue
             else:
                 #Return list of new nodes to infect
-                nodes_to_infect = calculate_infections(G, local_subG, j)
-                source_node=np.array([j]*len(nodes_to_infect))
-                #Check if any new nodes have actually been infected
+                nodes_to_infect, source_nodes = calculate_infections(G, local_subG, j)
+                #check if any new nodes have been infected
                 if len(nodes_to_infect) == 0:
                     continue
                 else:
+                    nodes_to_infect=list(filter(lambda x: x not in positive_nodes_list, nodes_to_infect))
+                    print('hello',nodes_to_infect)
                     #Infect nodes and update overall list
                     infect_nodes(G, nodes_to_infect)
                     infections_within_day += nodes_to_infect
+                    source_nodes_within_day += source_nodes
                     
         #Update overall infected list and remove duplicate nodes
-        infections_within_day=list(filter(lambda x: x not in infected_nodes_list,infections_within_day))
-        infected_nodes_list += infections_within_day
-        #infected_nodes_list = [*set(infected_nodes_list)]
+        #infections_within_day=list(filter(lambda x: x not in infected_nodes_list,infections_within_day))
+        infective_nodes_list += infections_within_day
+        positive_nodes_list += infections_within_day
         #Decrement vaccination value by a certain amount, if negative set to 0
         vacc_subG = nx.subgraph(G, find_vaccinated_nodes(G)) #Make subgraph of only nodes with some ammount of vaccination
         vacc_subG_dict = nx.get_node_attributes(vacc_subG, 'Vaccination') #Get their vaccination status in a dict
@@ -83,31 +84,28 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
         nx.set_node_attributes(G, vacc_subG_dict, name = 'Vaccination') #Set that new value back into G
  
         #Find how many new nodes are infected and update lists and counters
-        #new_inf_count = len(infected_nodes_list) - infected_nodes_count
         new_inf_count = len(infections_within_day)
-        infected_nodes_count = len(infected_nodes_list)
+        infected_nodes_count = len(positive_nodes_list)
         daily_infections_list.append(new_inf_count)
 
-                #For visualising the graph
+    
 
-        #if infected_nodes_count >= len(G)-3:
-         #   print('Nodes to be infected: ',nodes_to_infect)
-           # sys.exit('Vaccinated node was infected')
-        daysinfected=daysinfected+1
-        daysinfected=np.append(daysinfected,[0]*len(infections_within_day))
+        daysinfected=np.append(daysinfected,[0]*new_inf_count)
+        print(len(daysinfected),len(positive_nodes_list),len(infective_nodes_list))
         if np.max(daysinfected)>=5:
             #this is stopping transmission
             locationinf=[]
             locationinf=np.where(np.array(daysinfected)==5)[0]
-            uninfectivenodes=list(np.array(infected_nodes_list)[locationinf])
-            infected_nodes_list=list(filter(lambda x: x not in uninfectivenodes, infected_nodes_list))
+            uninfectivenodes=list(np.array(positive_nodes_list)[locationinf])
+            infective_nodes_list=list(filter(lambda x: x not in uninfectivenodes, infective_nodes_list))
             stoptransmission_nodes(G,locationinf)
         if np.max(daysinfected)>=10:
             #this is healing them
+            print(daysinfected==10)
             locationcure=[]
-            locationcure=np.where(np.array(daysinfected)==10)[0]
-             #deleting the cured nodes from the infected list
+            locationcure=np.where(daysinfected==10)[0]
             daysinfected=np.delete(daysinfected,locationcure)
+            positive_nodes_list
             cure_nodes(G,locationcure)
        
         #For visualising the graph
@@ -119,7 +117,7 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
         if log == True:
             print('Iteration: ',i)
             print('Number of Infected Nodes...', infected_nodes_count)
-            print('IDs of Infected Nodes...', infected_nodes_list)
+            print('IDs of Infected Nodes...', positive_nodes_list)
             
         #For adding delay
         if delay == True:
@@ -131,13 +129,15 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
     
     #print(nx.get_node_attributes(G, name = 'Infected by:'))
             
-    return G, infected_nodes_list, daily_infections_list
+    return G, infective_nodes_list, daily_infections_list
+
 
 
 #Infects specified nodes
 def infect_nodes(G, nodes_to_infect):
     nodes = dict.fromkeys(nodes_to_infect, True)
-    nx.set_node_attributes(G, nodes, name = 'Infection')    
+    nx.set_node_attributes(G, nodes, name = 'Infection')
+    nx.set_node_attributes(G, nodes, name = 'Infective')    
     return G
 
 def infect_random_nodes(G, amount_to_infect):
@@ -145,6 +145,7 @@ def infect_random_nodes(G, amount_to_infect):
     nodes_to_infect = np.random.choice(healthy_nodes, size = amount_to_infect, replace = False)
     nodes = dict.fromkeys(nodes_to_infect, True)
     nx.set_node_attributes(G, nodes, name = 'Infection')
+    nx.set_node_attributes(G, nodes, name = 'Infective')
     return G
 
 '''
@@ -197,41 +198,24 @@ def find_healthy_nodes(G):
 def calculate_infections(G, subG, centre):
     #Create empty bin for nodes that get infected
     infected_nodes = []
+    source_nodes = []
     
     #Create and order dictionaries of edges and vaccination status
     edge_prob = nx.get_edge_attributes(subG, 'Probability')
     edge_prob = OrderedDict(sorted(edge_prob.items()))
-
-    vacc_status = nx.get_node_attributes(subG, 'Vaccination')
-    vacc_status = OrderedDict(sorted(vacc_status.items()))
     
     #Create lists of keys and related values
     edge_prob_keys = list(edge_prob.keys())
     edge_prob_vals = list(edge_prob.values())
-    vacc_status_keys = list(vacc_status.keys())
-    vacc_status_vals = list(vacc_status.values())
-
-    #Find the central node in the vaccination status and remove
-    vacc_centre_index = [i for i, value in enumerate(vacc_status_keys) if value == centre][0]
-    del vacc_status_keys[vacc_centre_index]
-    del vacc_status_vals[vacc_centre_index]
 
     #Iterate through vals checking if they exceed the rand values, then append to list
     for i in range(len(edge_prob)):
         if np.random.random() <= edge_prob_vals[i]:
             node_found = [x for x in edge_prob_keys[i] if x != centre][0]
+            infected_nodes.append(node_found)
+            source_nodes.append(centre)
 
-            #Check vaccination doesnt prevent infection
-            vacc_status_index = [i for i, value in enumerate(vacc_status_keys) if value == node_found][0]
-            if np.random.random() >= vacc_status_vals[vacc_status_index]:
-                infected_nodes.append(node_found)
-    
-    #Add label that the central node was the one that infected these
-    infected_by_dict = nx.get_node_attributes(nx.subgraph(subG, infected_nodes), 'Infected by:')
-    [infected_by_dict.update({k: centre}) for k, v in infected_by_dict.items()]
-    nx.set_node_attributes(G, infected_by_dict, name = 'Infected by:')
-
-    return infected_nodes
+    return infected_nodes, source_nodes
 
 #%% Utility
 def remove_repeated(lst):
