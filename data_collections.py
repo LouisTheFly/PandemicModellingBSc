@@ -24,7 +24,7 @@ import pstats
 
 ###### Setup - Change These ############
 
-time_steps = 400
+time_steps = 800
 show = False
 log = False
 delay = False
@@ -36,7 +36,7 @@ graph_type = 'WS'
 
 #These get multiplied to form the base_edge_prob
 meeting_chance = 0.2
-transmission_chance = 0.3
+transmission_chance = 0.2
 
 
 ###### Scenario Controls - Change These #############
