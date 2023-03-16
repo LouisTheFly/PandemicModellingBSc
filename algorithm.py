@@ -27,7 +27,8 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
     infected_nodes_count = len(infected_nodes_list) #Number of nodes infected at any point
     
     #Place to store count of each day's new infections
-    daily_infections_list = []
+    net_infections_list = []
+    gross_infections_list = []
     infected_nodes_count_list = []
     
     #Each time_step
@@ -120,7 +121,8 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
         #Find how many new nodes are infected and update lists and counters
         new_infected_nodes_count = len(infected_nodes_list)
         inf_count_difference = new_infected_nodes_count - infected_nodes_count
-        daily_infections_list.append(inf_count_difference)
+        net_infections_list.append(inf_count_difference)
+        gross_infections_list.append(len(infections_within_day))
         infected_nodes_count_list.append(new_infected_nodes_count)
                 
         #Update count
@@ -140,7 +142,7 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
     R_sources = nx.get_node_attributes(G, 'Infected by:')
     R_sources = list(R_sources.values())
             
-    return G, infected_nodes_list, daily_infections_list, infected_nodes_count_list, R_sources
+    return G, infected_nodes_list, gross_infections_list, net_infections_list, infected_nodes_count_list, R_sources
 
 
 #Infects specified nodes

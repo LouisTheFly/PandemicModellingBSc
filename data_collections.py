@@ -24,7 +24,7 @@ import pstats
 
 ###### Setup - Change These ############
 
-time_steps = 200
+time_steps = 400
 show = False
 log = False
 delay = False
@@ -34,7 +34,8 @@ plot = True
 nodes = 10000
 graph_type = 'WS'
 
-meeting_chance = 0.4
+#These get multiplied to form the base_edge_prob
+meeting_chance = 0.2
 transmission_chance = 0.3
 
 
@@ -42,7 +43,7 @@ transmission_chance = 0.3
 #Infection Controls
 infectivity_period = 10 #Days in which it can infect other nodes
 immunity_period = 20 #Days after infectivity period ends
-infection_dose = 2 #%
+infection_dose = 1 #%
 
 #Vaccination Controls
 rate_vaccination_loss = 1 #% #Common to natural and forced immunity
@@ -83,7 +84,7 @@ if show == True:
 
 ########Iterating########
 
-graph, infected_list, infections_per_day, infected_nodes_count_list, R_sources = alg.run_graph(graph, time_steps, show = show, log = log, delay = delay, base_infection_strength = base_infection_strength, base_infection_decay = base_infection_decay, base_vacc_loss = base_vacc_loss)
+graph, infected_list, gross_infections_per_day, net_infections_per_day, infected_nodes_count_list, R_sources = alg.run_graph(graph, time_steps, show = show, log = log, delay = delay, base_infection_strength = base_infection_strength, base_infection_decay = base_infection_decay, base_vacc_loss = base_vacc_loss)
 
 
 ########Finding R########
@@ -103,7 +104,8 @@ if plot == True:
     statistical_R_value = round(infectivity_period * base_edge_prob * avg_degree, 3)
 
 ########Graphing########
-    alg.plotting(np.arange(time_steps),infections_per_day, 'bar', 'Infections per Day', 'Time (in days)', 'Change in Number of Infections', five_day_average = True)
+    alg.plotting(np.arange(time_steps),net_infections_per_day, 'bar', 'Net Infections per Day', 'Time (in days)', 'Change in Number of Infections', five_day_average = True)
+    alg.plotting(np.arange(time_steps),gross_infections_per_day, 'bar', 'Gross Infections per Day', 'Time (in days)', 'Change in Number of Infections', five_day_average = True)
     alg.plotting(np.arange(time_steps),infected_nodes_count_list, 'bar', 'Infected per Day', 'Time (in days)', 'Number of Infections', five_day_average = True)
     if len(infected_list) != 0:
         plt.hist(bin_means_corrected, np.linspace(0,max(bin_means_corrected), max(bin_means_corrected)+1), width = 0.9)
