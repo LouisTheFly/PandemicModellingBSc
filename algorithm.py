@@ -219,6 +219,30 @@ def calculate_infections(G, subG, centre):
 
     return infected_nodes, source_nodes
 
+def iteratorsuperfunc(repeats,graph,time_steps,show,log,delay,base_infection_strength,base_infection_decay,base_vacc_loss):
+   ### initialisation###
+   
+   datalabels=['graph_tot','inf_list_tot','gross_inf_per_day_tot','net_inf_per_day_tot','inf_nodes_count_list_tot','R_sources_tot']
+   
+   ###GETTING THE DATA###
+   graph_tot=[]
+   inf_list_tot=[]
+   gross_inf_per_day_tot=[]
+   net_inf_per_day_tot=[]
+   inf_nodes_count_list_tot=[]
+   R_sources_tot=[]
+   for i in range(repeats):
+       graph, inf_list, gross_inf_per_day, net_inf_per_day, inf_nodes_count_list, R_sources = run_graph(graph, time_steps, show = show, log = log, delay = delay, base_infection_strength = base_infection_strength, base_infection_decay = base_infection_decay, base_vacc_loss = base_vacc_loss)
+       graph_tot.append(graph)
+       inf_list_tot.append(inf_list)
+       gross_inf_per_day_tot.append(gross_inf_per_day)
+       net_inf_per_day_tot.append(net_inf_per_day)
+       inf_nodes_count_list_tot.append(inf_nodes_count_list)
+       R_sources_tot.append(R_sources)
+   data=[graph_tot,inf_list_tot,gross_inf_per_day_tot,net_inf_per_day_tot,inf_nodes_count_list_tot,R_sources_tot]
+   for j in range(len(datalabels)):
+       pd.DataFrame(data[i]).to_csv(datalabels[i])
+      
 
 #%% Utility
 
