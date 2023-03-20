@@ -19,16 +19,16 @@ def make_graph(nodes = 10 , graph_type = 'cycle', base_edge_prob = 0.5):
     
     #Choose which graph to draw
     if graph_type == 'WS':
-        G = nx.watts_strogatz_graph(nodes, 4, 0.3, seed=None)
+        G = nx.watts_strogatz_graph(nodes, 4, 0.6, seed=None)
         
     elif graph_type == 'circulant':
         G = nx.watts_strogatz_graph(nodes, 4, 0, seed=None)
 
     elif graph_type == 'complete':
-        G = nx.cycle_graph(nodes)
+        G = nx.complete_graph(nodes)
         
     else:
-        G = nx.complete_graph(nodes)
+        G = nx.cycle_graph(nodes)
     
     #Add node attributes
     nx.set_node_attributes(G, 0, name = 'Infection')
