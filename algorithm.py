@@ -57,9 +57,7 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
         R_day = []
         for i in cured_nodes_list:
             R_day.append(rolling_source_list.count(i))
-            print(i)
-            print(rolling_source_list)
-            print(rolling_source_list.count(i))
+
         R_cum_vals_list.append(R_day)
         
         #Deleting calculated R valls from roling source list

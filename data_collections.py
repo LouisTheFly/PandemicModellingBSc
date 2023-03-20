@@ -11,7 +11,7 @@ import random
 import numpy as np
 import pandas as pd
 import copy
-
+import math
 #other files
 import graph_generator as gen
 import algorithm as alg
@@ -97,6 +97,8 @@ if plot == True:
     for i in R_cum_vals_list:
         R_vals_list.append((np.mean(i)))
         R_std_list.append((np.std(i)))
+    R_vals_list = list(filter(lambda x: not math.isnan(x), R_vals_list))
+    R_std_list = list(filter(lambda x: not math.isnan(x), R_std_list))
     #bins = np.linspace(0, nodes, nodes+1)
     #bin_means = np.histogram(R_sources, bins)[0]
     #if len(infected_nodes_list) != 0:
@@ -113,7 +115,7 @@ if plot == True:
     degree_array = np.transpose(analfunc.degree_finder(graph))[1]
     avg_degree = np.mean(degree_array)
     statistical_R_value = round((1-(1-base_edge_prob)**infectivity_period) * avg_degree, 3)
-
+    
 ########Graphing########
     alg.plotting(np.arange(time_steps),net_infections_per_day, 'bar', 'Net Infections per Day', 'Time (in days)', 'Change in Number of Infections', five_day_average = True)
     alg.plotting(np.arange(time_steps),gross_infections_per_day, 'bar', 'Gross Infections per Day', 'Time (in days)', 'Change in Number of Infections', five_day_average = True)
