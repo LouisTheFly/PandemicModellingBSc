@@ -13,6 +13,7 @@ import scipy as sp
 import matplotlib.pyplot as plt
 import graph_generator as gen
 import sys
+import copy
 from time import sleep
 from collections import OrderedDict
 from tqdm import tqdm
@@ -25,11 +26,17 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
     infected_nodes_list = [] #Contains a list of node keys infected at any point
     infected_nodes_list += find_infected_nodes(G) #Easier to read but not neccesary as 2 lines
     infected_nodes_count = len(infected_nodes_list) #Number of nodes infected at any point
+    prev_infected_nodes_list = infected_nodes_list
     
     #Place to store count of each day's new infections
     net_infections_list = []
     gross_infections_list = []
+    ever_infections_list = []
     infected_nodes_count_list = []
+    
+    #For R calc
+    R_cum_vals_list = []
+    rolling_source_list = []
     
     #Each time_step
     for i in tqdm(range(time_steps)):
@@ -44,6 +51,19 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
         infections_within_day = []
         source_nodes_within_day = []
         infected_nodes_list = find_infected_nodes(G)
+        
+        #For R calculation
+        cured_nodes_list = list(filter(lambda x: x not in infected_nodes_list, prev_infected_nodes_list))
+        R_day = []
+        for i in cured_nodes_list:
+            R_day.append(rolling_source_list.count(i))
+            print(i)
+            print(rolling_source_list)
+            print(rolling_source_list.count(i))
+        R_cum_vals_list.append(R_day)
+        
+        #Deleting calculated R valls from roling source list
+        rolling_source_list = list(filter(lambda x: x not in cured_nodes_list, rolling_source_list))
         
         #Decrement vaccination value by a certain amount, if negative set to 0
         vacc_subG = nx.subgraph(G, find_vaccinated_nodes(G)) #Make subgraph of only nodes with some ammount of vaccination
@@ -85,6 +105,7 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
                 else:
                     infections_within_day += nodes_to_infect
                     source_nodes_within_day += source_nodes
+
         
         #Take collated possible infections and check vaccination doesnt prevent infection
         if len(infections_within_day) != 0:
@@ -105,6 +126,7 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
                     confirmed_infections.append(infections_within_day[i])
                     confirmed_sources.append(source_nodes_within_day[i])
             infections_within_day = confirmed_infections       
+            rolling_source_list += confirmed_sources
         
         if len(infections_within_day) != 0:
             #Infect (Vaccinate) nodes and update overall list
@@ -117,6 +139,11 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
         #Update overall infected list and remove duplicate nodes
         infected_nodes_list += infections_within_day
         infected_nodes_list = [*set(infected_nodes_list)]
+        prev_infected_nodes_list = copy.deepcopy(infected_nodes_list)
+        
+        #Update ever infected list and remove duplicate nodes
+        ever_infections_list += infections_within_day
+        ever_infections_list = [*set(ever_infections_list)]
         
         #Find how many new nodes are infected and update lists and counters
         new_infected_nodes_count = len(infected_nodes_list)
@@ -141,8 +168,10 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
     #For creating an R value
     R_sources = nx.get_node_attributes(G, 'Infected by:')
     R_sources = list(R_sources.values())
+    
+    
             
-    return G, infected_nodes_list, gross_infections_list, net_infections_list, infected_nodes_count_list, R_sources
+    return G, infected_nodes_list, gross_infections_list, net_infections_list, ever_infections_list, infected_nodes_count_list, R_cum_vals_list
 
 
 #Infects specified nodes

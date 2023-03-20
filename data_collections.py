@@ -24,7 +24,7 @@ import pstats
 
 ###### Setup - Change These ############
 
-time_steps = 800
+time_steps = 200
 show = False
 log = False
 delay = False
@@ -32,18 +32,18 @@ plot = True
 
 ###### Node Setup - Change These ############
 nodes = 10000
-graph_type = 'WS'
+graph_type = 'cycle'
 
 #These get multiplied to form the base_edge_prob
-meeting_chance = 0.2
-transmission_chance = 0.2
+meeting_chance = 0.4
+transmission_chance = 0.8
 
 
 ###### Scenario Controls - Change These #############
 #Infection Controls
-infectivity_period = 10 #Days in which it can infect other nodes
-immunity_period = 20 #Days after infectivity period ends
-infection_dose = 1 #%
+infectivity_period = 15 #Days in which it can infect other nodes
+immunity_period = 15 #Days after infectivity period ends
+infection_dose = 0.1 #%
 
 #Vaccination Controls
 rate_vaccination_loss = 1 #% #Common to natural and forced immunity
@@ -62,6 +62,8 @@ infection_immunity_strength = 1 + immunity_period * rate_vaccination_loss
 
 #nodes_to_infect = [0]
 amount_to_infect = int(round(infection_dose/100*nodes))
+if amount_to_infect < 1:
+    raise ValueError('No nodes will be infected - raise dosage')
 #nodes_to_vaccinate = [5,7]
 amount_to_vaccinate = int(round(vaccination_dose/100*nodes))
 
@@ -84,32 +86,41 @@ if show == True:
 
 ########Iterating########
 
-graph, infected_list, gross_infections_per_day, net_infections_per_day, infected_nodes_count_list, R_sources = alg.run_graph(graph, time_steps, show = show, log = log, delay = delay, base_infection_strength = base_infection_strength, base_infection_decay = base_infection_decay, base_vacc_loss = base_vacc_loss)
+graph, infected_nodes_list, gross_infections_per_day, net_infections_per_day, ever_infections_list, infected_nodes_count_list, R_cum_vals_list = alg.run_graph(graph, time_steps, show = show, log = log, delay = delay, base_infection_strength = base_infection_strength, base_infection_decay = base_infection_decay, base_vacc_loss = base_vacc_loss)
 
 
 ########Finding R########
 if plot == True:
-##Empirical##
-    bins = np.linspace(0, nodes, nodes+1)
-    bin_means = np.histogram(R_sources, bins)[0]
-    if len(infected_list) != 0:
-        bin_means_corrected = []
-        for i in infected_list:
-            bin_means_corrected.append(bin_means[i])
-        empirical_R_value = round(np.mean(bin_means_corrected),3)
+    ##Empirical##
+    R_vals_list = []
+    R_std_list = []
+    for i in R_cum_vals_list:
+        R_vals_list.append((np.mean(i)))
+        R_std_list.append((np.std(i)))
+    #bins = np.linspace(0, nodes, nodes+1)
+    #bin_means = np.histogram(R_sources, bins)[0]
+    #if len(infected_nodes_list) != 0:
+        #inf_subG = nx.subgraph(graph, infected_nodes_list)
+        #immunity_status = nx.get_node_attributes(inf_subG, 'Vaccination')
+        #nodes = list({k:v for (k,v) in nx.get_node_attributes(G, 'Infection').items() if v!=0})
+        
+        #bin_means_corrected = []
+        #for i in infected_nodes_list:
+            #bin_means_corrected.append(bin_means[i])
+        #empirical_R_value = round(np.mean(bin_means_corrected),3)
     
     ##Statistical##
     degree_array = np.transpose(analfunc.degree_finder(graph))[1]
     avg_degree = np.mean(degree_array)
-    statistical_R_value = round(infectivity_period * base_edge_prob * avg_degree, 3)
+    statistical_R_value = round((1-(1-base_edge_prob)**infectivity_period) * avg_degree, 3)
 
 ########Graphing########
     alg.plotting(np.arange(time_steps),net_infections_per_day, 'bar', 'Net Infections per Day', 'Time (in days)', 'Change in Number of Infections', five_day_average = True)
     alg.plotting(np.arange(time_steps),gross_infections_per_day, 'bar', 'Gross Infections per Day', 'Time (in days)', 'Change in Number of Infections', five_day_average = True)
     alg.plotting(np.arange(time_steps),infected_nodes_count_list, 'bar', 'Infected per Day', 'Time (in days)', 'Number of Infections', five_day_average = True)
-    if len(infected_list) != 0:
-        plt.hist(bin_means_corrected, np.linspace(0,max(bin_means_corrected), max(bin_means_corrected)+1), width = 0.9)
-        plt.title('Emp R = %s Stat R = %s'%(empirical_R_value, statistical_R_value))
+    #if len(infected_nodes_list) != 0:
+        #plt.hist(bin_means_corrected, np.linspace(0,max(bin_means_corrected), max(bin_means_corrected)+1), width = 0.9)
+        #plt.title('Emp R = %s Stat R = %s'%(empirical_R_value, statistical_R_value))
     plt.show()
     
   
