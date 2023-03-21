@@ -24,26 +24,26 @@ import pstats
 
 ###### Setup - Change These ############
 
-time_steps = 100
+time_steps = 300
 show = False
 log = False
 delay = False
 plot = True
 
 ###### Node Setup - Change These ############
-nodes = 100
+nodes = 10000
 graph_type = 'WS'
 
 #These get multiplied to form the base_edge_prob
-meeting_chance = 0.4
-transmission_chance = 0.4
+meeting_chance = 0.3
+transmission_chance = 0.1
 
 
 ###### Scenario Controls - Change These #############
 #Infection Controls
 infectivity_period = 15 #Days in which it can infect other nodes
 immunity_period = 15 #Days after infectivity period ends
-infection_dose = 1 #%
+infection_dose = 0.1 #%
 
 #Vaccination Controls
 rate_vaccination_loss = 1 #% #Common to natural and forced immunity
@@ -88,30 +88,39 @@ if show == True:
 
 graph, infected_nodes_list, gross_infections_per_day, net_infections_per_day, ever_infections_list, infected_nodes_count_list, R_cum_vals_list = alg.run_graph(graph, time_steps, show = show, log = log, delay = delay, base_infection_strength = base_infection_strength, base_infection_decay = base_infection_decay, base_vacc_loss = base_vacc_loss)
 
-
+#%%
 ########Finding R########
-if plot == True:
-    ##Empirical##
-    R_vals_list = []
-    R_std_list = []
-    for i in R_cum_vals_list:
-        R_vals_list.append((np.mean(i)))
-        R_std_list.append((np.std(i)))
+##Empirical##
+R_emp_vals_list = []
+R_emp_std_list = []
+for i in R_cum_vals_list[infectivity_period:]:
+    R_emp_vals_list.append((np.mean(i)))
+    R_emp_std_list.append((np.std(i)))
+for i in range(infectivity_period):
+    R_emp_vals_list.append(float('nan'))
+    R_emp_std_list.append(float('nan'))
     
-    ##Statistical##
-    degree_array = np.transpose(analfunc.degree_finder(graph))[1]
-    avg_degree = np.mean(degree_array)
-    statistical_R_value = round((1-(1-base_edge_prob)**infectivity_period) * avg_degree, 3)
+##Statistical##
+degree_array = np.transpose(analfunc.degree_finder(graph))[1]
+avg_degree = np.mean(degree_array)
+R0 = round((1-(1-base_edge_prob)**infectivity_period) * avg_degree, 3)
+R_stat_vals_list = []
+for i in range(time_steps):
+    R_stat_vals_list.append(R0 * (nodes - infected_nodes_count_list[i]) / nodes)
 
 ########Graphing########
-    alg.plotting(np.arange(time_steps),net_infections_per_day, 'bar', 'Net Infections per Day', 'Time (in days)', 'Change in Number of Infections', five_day_average = True)
-    alg.plotting(np.arange(time_steps),gross_infections_per_day, 'bar', 'Gross Infections per Day', 'Time (in days)', 'Change in Number of Infections', five_day_average = True)
-    alg.plotting(np.arange(time_steps),infected_nodes_count_list, 'bar', 'Infected per Day', 'Time (in days)', 'Number of Infections', five_day_average = True)
-    #if len(infected_nodes_list) != 0:
-        #plt.hist(bin_means_corrected, np.linspace(0,max(bin_means_corrected), max(bin_means_corrected)+1), width = 0.9)
-        #plt.title('Emp R = %s Stat R = %s'%(empirical_R_value, statistical_R_value))
-    plt.show()
-    
+if plot == True:
+    #X axis
+    xaxis = np.arange(time_steps)
+
+    alg.plotting(xaxis,net_infections_per_day, 'bar', 'Net Infections per Day', 'Time (in days)', 'Change in Number of Infections', five_day_average = True)
+    alg.plotting(xaxis,gross_infections_per_day, 'bar', 'Gross Infections per Day', 'Time (in days)', 'Change in Number of Infections', five_day_average = True)
+    alg.plotting(xaxis,infected_nodes_count_list, 'bar', 'Infected per Day', 'Time (in days)', 'Number of Infections', five_day_average = True)
+
+
+plt.plot(xaxis, R_emp_vals_list)
+plt.plot(xaxis, R_stat_vals_list)
+plt.show()
   
 ########Optimising########
 #cProfile.run('alg.run_graph(graph, time_steps, show = show, log = log, delay = delay, base_infection_decay = base_infection_decay, base_vacc_loss = base_vacc_loss)', 'restats')
