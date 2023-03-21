@@ -162,12 +162,7 @@ def run_graph(G, time_steps = 20, show = False, log = False, delay = False, base
         #For adding delay
         if delay == True:
             sleep(1)  
-    
-    #For creating an R value
-    R_sources = nx.get_node_attributes(G, 'Infected by:')
-    R_sources = list(R_sources.values())
-    
-    
+ 
             
     return G, infected_nodes_list, gross_infections_list, net_infections_list, ever_infections_list, infected_nodes_count_list, R_cum_vals_list
 

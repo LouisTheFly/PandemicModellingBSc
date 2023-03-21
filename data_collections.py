@@ -36,7 +36,7 @@ graph_type = 'WS'
 
 #These get multiplied to form the base_edge_prob
 meeting_chance = 0.4
-transmission_chance = 0.8
+transmission_chance = 0.4
 
 
 ###### Scenario Controls - Change These #############
@@ -97,17 +97,6 @@ if plot == True:
     for i in R_cum_vals_list:
         R_vals_list.append((np.mean(i)))
         R_std_list.append((np.std(i)))
-    #bins = np.linspace(0, nodes, nodes+1)
-    #bin_means = np.histogram(R_sources, bins)[0]
-    #if len(infected_nodes_list) != 0:
-        #inf_subG = nx.subgraph(graph, infected_nodes_list)
-        #immunity_status = nx.get_node_attributes(inf_subG, 'Vaccination')
-        #nodes = list({k:v for (k,v) in nx.get_node_attributes(G, 'Infection').items() if v!=0})
-        
-        #bin_means_corrected = []
-        #for i in infected_nodes_list:
-            #bin_means_corrected.append(bin_means[i])
-        #empirical_R_value = round(np.mean(bin_means_corrected),3)
     
     ##Statistical##
     degree_array = np.transpose(analfunc.degree_finder(graph))[1]
