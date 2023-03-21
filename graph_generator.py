@@ -19,7 +19,7 @@ def make_graph(nodes = 10 , graph_type = 'cycle', base_edge_prob = 0.5):
     
     #Choose which graph to draw
     if graph_type == 'WS':
-        G = nx.watts_strogatz_graph(nodes, 4, 0.6, seed=None)
+        G = nx.watts_strogatz_graph(nodes, 4, 0.8, seed=None)
         
     elif graph_type == 'circulant':
         G = nx.watts_strogatz_graph(nodes, 4, 0, seed=None)
