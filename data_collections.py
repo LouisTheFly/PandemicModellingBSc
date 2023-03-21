@@ -11,7 +11,7 @@ import random
 import numpy as np
 import pandas as pd
 import copy
-import math
+
 #other files
 import graph_generator as gen
 import algorithm as alg
@@ -24,15 +24,15 @@ import pstats
 
 ###### Setup - Change These ############
 
-time_steps = 200
+time_steps = 100
 show = False
 log = False
 delay = False
 plot = True
 
 ###### Node Setup - Change These ############
-nodes = 10000
-graph_type = 'cycle'
+nodes = 100
+graph_type = 'WS'
 
 #These get multiplied to form the base_edge_prob
 meeting_chance = 0.4
@@ -43,7 +43,7 @@ transmission_chance = 0.8
 #Infection Controls
 infectivity_period = 15 #Days in which it can infect other nodes
 immunity_period = 15 #Days after infectivity period ends
-infection_dose = 0.1 #%
+infection_dose = 1 #%
 
 #Vaccination Controls
 rate_vaccination_loss = 1 #% #Common to natural and forced immunity
@@ -97,8 +97,6 @@ if plot == True:
     for i in R_cum_vals_list:
         R_vals_list.append((np.mean(i)))
         R_std_list.append((np.std(i)))
-    R_vals_list = list(filter(lambda x: not math.isnan(x), R_vals_list))
-    R_std_list = list(filter(lambda x: not math.isnan(x), R_std_list))
     #bins = np.linspace(0, nodes, nodes+1)
     #bin_means = np.histogram(R_sources, bins)[0]
     #if len(infected_nodes_list) != 0:
@@ -115,7 +113,7 @@ if plot == True:
     degree_array = np.transpose(analfunc.degree_finder(graph))[1]
     avg_degree = np.mean(degree_array)
     statistical_R_value = round((1-(1-base_edge_prob)**infectivity_period) * avg_degree, 3)
-    
+
 ########Graphing########
     alg.plotting(np.arange(time_steps),net_infections_per_day, 'bar', 'Net Infections per Day', 'Time (in days)', 'Change in Number of Infections', five_day_average = True)
     alg.plotting(np.arange(time_steps),gross_infections_per_day, 'bar', 'Gross Infections per Day', 'Time (in days)', 'Change in Number of Infections', five_day_average = True)
