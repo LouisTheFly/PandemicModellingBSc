@@ -268,6 +268,17 @@ def iteratorsuperfunc(repeats,graph,time_steps,show,log,delay,base_infection_str
 
 #%% Utility
 
+def moving_average(list_of_values, size):
+    list_of_avg = []
+    for i in range(size, len(list_of_values)-size):
+        temp_list = list_of_values[i-size:i+size+1]
+        list_of_avg.append(sum(temp_list)/(2*size+1))
+    for i in range(size):
+        list_of_avg.insert(0, float('nan'))
+        list_of_avg.append(float('nan'))
+    return list_of_avg
+        
+
 def plotting(x,y, g_type = 'line', title = 'Default Title',x_label = 'Default X',y_label = 'Default Y', five_day_average = False):
     
     #Line or bar chart
@@ -278,10 +289,8 @@ def plotting(x,y, g_type = 'line', title = 'Default Title',x_label = 'Default X'
     
     #Adds a 5 day moving average line
     if five_day_average == True:
-        z = np.empty(len(x))
-        for i in range(2,len(x)-2):
-            z[i] = (y[i-2]+y[i-1]+y[i]+y[i+1]+y[i+2])/5
-        plt.plot(x[2:-2],z[2:-2], c='red')
+        z = moving_average(y, 2)
+        plt.plot(x, z, c='red')
     
     #Visual stuff
     plt.xlabel(x_label)

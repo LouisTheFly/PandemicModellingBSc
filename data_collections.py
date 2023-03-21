@@ -36,7 +36,7 @@ graph_type = 'WS'
 
 #These get multiplied to form the base_edge_prob
 meeting_chance = 0.3
-transmission_chance = 0.2
+transmission_chance = 0.1
 
 
 ###### Scenario Controls - Change These #############
@@ -124,6 +124,7 @@ R_stat_vals_list = []
 for i in range(time_steps):
     R_stat_vals_list.append(R0 * (nodes - infected_nodes_count_list[i]) / nodes)
 
+#%%
 ########Graphing########
 if plot == True:
     #X axis
@@ -135,6 +136,7 @@ if plot == True:
 
     
     plt.plot(xaxis, R_emp_vals_list, 'x')
+    plt.plot(xaxis, alg.moving_average(R_emp_vals_list, 4), 'x')
     plt.plot(xaxis, R_stat_vals_list)
     plt.show()
   
